@@ -5,17 +5,20 @@
 package Interfaces;
 
 import DTO.CitaDTO;
+import Dominios.CitaDominio;
+import java.util.List;
 
 /**
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
 public interface ICitaDAO {
-    boolean insert(CitaDTO paciente);
+    boolean insert(CitaDTO cita);
     boolean delete(int id);
-    boolean readall();
-    boolean update(CitaDTO paciente);
-    boolean buscarId(int id);
+    List<CitaDominio> readall();
+    boolean update(CitaDTO cita);
+    CitaDominio buscarId(int id);
+    CitaDominio buscarCita(CitaDTO cita);
     boolean existeCitaPorPaciente(int id_paciente);
     boolean existeCitaPorDoctor(int id_doctor);
     

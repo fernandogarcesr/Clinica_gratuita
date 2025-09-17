@@ -5,7 +5,8 @@
 package Interfaces;
 
 import DTO.PacienteDTO;
-import Dominios.PacientesDominio;
+import Dominios.PacienteDominio;
+
 import java.util.List;
 
 /**
@@ -18,9 +19,10 @@ public interface IPacienteDAO {
     
     boolean insert(PacienteDTO paciente);
     boolean delete(int id);
-    List<PacientesDominio> readall();
+    List<PacienteDominio> readall();
     boolean update(PacienteDTO paciente);
-    PacientesDominio buscarId(int id);
+    PacienteDominio buscarId(int id);
+    PacienteDominio buscarPaciente(PacienteDTO paciente);
     
     
     

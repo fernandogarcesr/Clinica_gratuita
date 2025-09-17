@@ -19,7 +19,7 @@ public class CitaDominio{
     private int id_doctor;
     private int id_paciente;
 
-    public CitasDominio(int id_citas, String motivo, Date fechaHora, Estado estado, int id_doctor, int id_paciente) {
+    public CitaDominio(int id_citas, String motivo, Date fechaHora, Estado estado, int id_doctor, int id_paciente) {
         this.id_citas = id_citas;
         this.motivo = motivo;
         this.fechaHora = fechaHora;
@@ -28,7 +28,7 @@ public class CitaDominio{
         this.id_paciente = id_paciente;
     }
 
-    public CitasDominio() {
+    public CitaDominio() {
     }
 
     public int getId_citas() {

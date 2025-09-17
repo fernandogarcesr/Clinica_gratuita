@@ -7,7 +7,7 @@ package DAO;
 import Config.ConexionJDBC;
 import DTO.PacienteDTO;
 import Dominios.ENUM.Sexo;
-import Dominios.PacientesDominio;
+import Dominios.PacienteDominio;
 import Interfaces.IPacienteDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -70,11 +70,11 @@ public class PacienteDAO implements IPacienteDAO {
     }
 
     @Override
-    public List<PacientesDominio> readall(){
+    public List<PacienteDominio> readall(){
         String sql = """
                     SELECT * FROM pacientes;
                     """;
-        List<PacientesDominio> lista= new LinkedList<>();
+        List<PacienteDominio> lista= new LinkedList<>();
         
                 
                 
@@ -95,7 +95,7 @@ public class PacienteDAO implements IPacienteDAO {
                 String telefono=rs.getString(6);
                 String email=rs.getString(7);
 
-                PacientesDominio paciente= new PacientesDominio(id_paciente, nombre, edad, sexo, direccion, telefono, email);
+                PacienteDominio paciente= new PacienteDominio(id_paciente, nombre, edad, sexo, direccion, telefono, email);
                 lista.add(paciente);
             }
             return lista;
@@ -137,7 +137,7 @@ public class PacienteDAO implements IPacienteDAO {
     }
 
     @Override
-    public PacientesDominio buscarId(int id) {
+    public PacienteDominio buscarId(int id) {
         String sql = """
                     SELECT * FROM pacientes WHERE id_paciente=?; 
                     """;
@@ -163,12 +163,51 @@ public class PacienteDAO implements IPacienteDAO {
                 String telefono=rs.getString(6);
                 String email=rs.getString(7);
 
-                PacientesDominio paciente= new PacientesDominio(id_paciente, nombre, edad, sexo, direccion, telefono, email);
+                PacienteDominio paciente= new PacienteDominio(id_paciente, nombre, edad, sexo, direccion, telefono, email);
                 return paciente;
             }
 
         } catch (SQLException e) {
             System.out.println("no se pudo encontrar el paciente id: " + id);
+            return null;
+        }
+        return null;
+
+    }
+
+    @Override
+    public PacienteDominio buscarPaciente(PacienteDTO paciente) {
+        String sql= """
+                    SELECT * FROM pacientes where email=?;
+                    """;
+        try (Connection cn = ConexionJDBC.getConnection(); PreparedStatement ps = cn.prepareCall(sql)) {
+
+            ps.setString(1,paciente.getEmail());
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int id_paciente=rs.getInt(1);
+                String nombre=rs.getString(2);
+                int edad= rs.getInt(3);
+                Sexo sexo=null;
+                if (rs.getString(4).equalsIgnoreCase("Masculino")) {
+                sexo= Sexo.MASCULINO;
+                }
+                if (rs.getString(4).equalsIgnoreCase("Femenino")) {
+                sexo= Sexo.FEMENINO;
+                }
+                String direccion=rs.getString(5);
+                String telefono=rs.getString(6);
+                String email=rs.getString(7);
+
+                PacienteDominio pacienteDominio = new PacienteDominio(id_paciente, nombre, edad, sexo, direccion, telefono, email);
+                
+                return pacienteDominio;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("no se pudo encontrar el paciente: " +paciente);
             return null;
         }
         return null;

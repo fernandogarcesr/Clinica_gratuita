@@ -51,11 +51,11 @@ public class TratamientoDTO {
         this.medicamentos = medicamentos;
     }
 
-    public int getId_cita() {
+    public int getIdCita() {
         return id_cita;
     }
 
-    public void setId_cita(int id_cita) {
+    public void setIdCita(int id_cita) {
         this.id_cita = id_cita;
     }
 

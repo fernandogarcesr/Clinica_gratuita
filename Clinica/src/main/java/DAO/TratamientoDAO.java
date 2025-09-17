@@ -4,8 +4,10 @@
  */
 package DAO;
 
-import DTO.TratamientosDTO;
+import DTO.TratamientoDTO;
+import Dominios.TratamientoDominio;
 import Interfaces.ITratamientoDAO;
+import java.util.List;
 
 /**
  *
@@ -14,7 +16,7 @@ import Interfaces.ITratamientoDAO;
 public class TratamientoDAO implements ITratamientoDAO {
 
     @Override
-    public boolean insert(TratamientosDTO paciente) {
+    public boolean insert(TratamientoDTO paciente) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -24,18 +26,30 @@ public class TratamientoDAO implements ITratamientoDAO {
     }
 
     @Override
-    public boolean readall() {
+    public List<TratamientoDominio> readall() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public boolean update(TratamientosDTO paciente) {
+    public boolean update(TratamientoDTO paciente) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public boolean buscarId(int id) {
+    public TratamientoDominio buscarId(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+    @Override
+    public boolean existeTratamientoPorCita(int id_citas) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public TratamientoDominio buscarTratamiento(TratamientoDTO tratamiento) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    
     
 }

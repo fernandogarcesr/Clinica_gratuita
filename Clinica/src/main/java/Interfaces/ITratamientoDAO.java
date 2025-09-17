@@ -19,6 +19,7 @@ public interface ITratamientoDAO {
     List<TratamientoDominio> readall();
     boolean update(TratamientoDTO paciente);
     TratamientoDominio buscarId(int id);
+    TratamientoDominio buscarTratamiento(TratamientoDTO tratamiento);
     boolean existeTratamientoPorCita(int id_citas);
     
 }

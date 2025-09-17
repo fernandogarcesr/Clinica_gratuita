@@ -15,11 +15,11 @@ public class DoctorDTO {
     private String telefono;
     private String email;
 
-    public DoctoresDTO() {
+    public DoctorDTO() {
     }
 
     
-    public DoctoresDTO( String nombre, String especialidad, String telefono, String email) {
+    public DoctorDTO( String nombre, String especialidad, String telefono, String email) {
         this.nombre = nombre;
         this.especialidad = especialidad;
         this.telefono = telefono;

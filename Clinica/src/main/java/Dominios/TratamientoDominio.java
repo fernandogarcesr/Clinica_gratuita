@@ -15,11 +15,11 @@ public class TratamientoDominio {
     private String medicamentos;
     private int id_cita;
 
-    public TratamientosDominios() {
+    public TratamientoDominio() {
     }
     
     
-    public TratamientosDominios(int id_tratamiento, String descripcion, String duracion, String medicamentos, int id_cita) {
+    public TratamientoDominio(int id_tratamiento, String descripcion, String duracion, String medicamentos, int id_cita) {
         this.id_tratamiento = id_tratamiento;
         this.descripcion = descripcion;
         this.duracion = duracion;

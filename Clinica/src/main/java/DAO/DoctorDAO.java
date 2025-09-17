@@ -5,9 +5,10 @@
 package DAO;
 
 import Config.ConexionJDBC;
-import DTO.DoctoresDTO;
-import Dominios.DoctoresDominio;
-import Interfaces.IDoctoresDAO;
+import DTO.DoctorDTO;
+import Dominios.DoctorDominio;
+import Interfaces.IDoctorDAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,10 +20,10 @@ import java.util.List;
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public class DoctorDAO implements IDoctoresDAO {
+public class DoctorDAO implements IDoctorDAO {
 
     @Override
-    public boolean insert(DoctoresDTO doctor) {
+    public boolean insert(DoctorDTO doctor) {
         String sql= """
                     INSERT INTO doctores(nombre, especialidad, telefono, email)
                     VALUES (?,?,?,?);
@@ -76,11 +77,11 @@ public class DoctorDAO implements IDoctoresDAO {
     }
 
     @Override
-    public List<DoctoresDominio> readall() {
+    public List<DoctorDominio> readall() {
         String sql = """
                     SELECT * FROM doctores;
                     """;
-        List<DoctoresDominio> lista= new LinkedList<>();
+        List<DoctorDominio> lista= new LinkedList<>();
         
                 
                 
@@ -93,7 +94,7 @@ public class DoctorDAO implements IDoctoresDAO {
                 String telefono = rs.getString(4);
                 String email = rs.getString(5);
                 
-                DoctoresDominio doctor= new DoctoresDominio(id_doctor, nombre, especialidad, telefono, email);
+                DoctorDominio doctor= new DoctorDominio(id_doctor, nombre, especialidad, telefono, email);
                 lista.add(doctor);
                 
             }
@@ -108,7 +109,7 @@ public class DoctorDAO implements IDoctoresDAO {
     }
 
     @Override
-    public boolean update(DoctoresDTO doctor) {
+    public boolean update(DoctorDTO doctor) {
         
         String sql = """
                     UPDATE doctores 
@@ -134,7 +135,7 @@ public class DoctorDAO implements IDoctoresDAO {
     
 
     @Override
-    public DoctoresDominio buscarId(int id) {
+    public DoctorDominio buscarId(int id) {
         String sql = """
                     SELECT * FROM doctores WHERE id_doctores=?; 
                     """;
@@ -146,12 +147,13 @@ public class DoctorDAO implements IDoctoresDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                String nombre=rs.getString(1);
-                String especialidad=rs.getString(2);
-                String telefono=rs.getString(3);
-                String email=rs.getString(4);
+                int idDoctor= rs.getInt(1);
+                String nombre=rs.getString(2);
+                String especialidad=rs.getString(3);
+                String telefono=rs.getString(4);
+                String email=rs.getString(5);
                 
-                DoctoresDominio doctor= new DoctoresDominio(id, nombre, especialidad, telefono, email);
+                DoctorDominio doctor= new DoctorDominio(idDoctor, nombre, especialidad, telefono, email);
                 
                 return doctor;
                 
@@ -164,6 +166,37 @@ public class DoctorDAO implements IDoctoresDAO {
         }
         return null;
 
+    }
+
+    @Override
+    public DoctorDominio buscarDoctor(DoctorDTO doctor) {
+        String sql= """
+                    SELECT * FROM doctores where email=?;
+                    """;
+        try (Connection cn = ConexionJDBC.getConnection(); PreparedStatement ps = cn.prepareCall(sql)) {
+
+            ps.setString(1,doctor.getEmail());
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int idDoctor= rs.getInt(1);
+                String nombre=rs.getString(2);
+                String especialidad=rs.getString(3);
+                String telefono=rs.getString(4);
+                String email=rs.getString(5);
+                
+                DoctorDominio doctorDominio= new DoctorDominio(idDoctor, nombre, especialidad, telefono, email);
+                
+                
+                return doctorDominio;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("no se pudo encontrar el paciente: " +doctor);
+            return null;
+        }
+        return null;
     }
     
 }

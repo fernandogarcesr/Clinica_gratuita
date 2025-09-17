@@ -1,8 +1,10 @@
 package BO;
 
 import DTO.TratamientoDTO;
+import Dominios.TratamientoDominio;
 import Interfaces.ICitaDAO;
 import Interfaces.ITratamientoDAO;
+import java.util.List;
 
 /**
  *
@@ -19,22 +21,12 @@ public class TratamientoBO {
     }
 
     /**
-     * Registra un tratamiento para una cita existente. Valida campos
-     * obligatorios y que la cita exista.
-     *
-     * @param tratamiento
+     * Registra un tratamiento para una cita existente.
      */
     public void registrarTratamiento(TratamientoDTO tratamiento) {
-        if (tratamiento.getDescripcion() == null || tratamiento.getDescripcion().isEmpty()) {
-            throw new IllegalArgumentException("La descripcion es obligatoria");
-        }
-        if (tratamiento.getDuracion() == null || tratamiento.getDuracion().isEmpty()) {
-            throw new IllegalArgumentException("La duracion es obligatoria");
-        }
-        if (tratamiento.getMedicamentos() == null || tratamiento.getMedicamentos().isEmpty()) {
-            throw new IllegalArgumentException("Los medicamentos son obligatorios");
-        }
-        if (!citaDAO.buscarId(tratamiento.getIdCita())) {
+        validarTratamiento(tratamiento);
+
+        if (citaDAO.buscarId(tratamiento.getIdCita()) == null) {
             throw new IllegalArgumentException("La cita asociada no existe");
         }
 
@@ -43,23 +35,19 @@ public class TratamientoBO {
             throw new RuntimeException("Error al registrar el tratamiento");
         }
     }
-    //actualiza el tratamiento existente
 
+    /**
+     * Actualiza un tratamiento existente.
+     */
     public void actualizarTratamiento(TratamientoDTO tratamiento) {
-        if (!tratamientoDAO.buscarId(tratamiento.getId())) {
+        TratamientoDominio existente = tratamientoDAO.buscarTratamiento(tratamiento);
+        if (existente == null) {
             throw new IllegalArgumentException("Tratamiento no existe");
         }
-        // Validaciones de campos obligatorios
-        if (tratamiento.getDescripcion() == null || tratamiento.getDescripcion().isEmpty()) {
-            throw new IllegalArgumentException("La descripcion es obligatoria");
-        }
-        if (tratamiento.getDuracion() == null || tratamiento.getDuracion().isEmpty()) {
-            throw new IllegalArgumentException("La duracion es obligatoria");
-        }
-        if (tratamiento.getMedicamentos() == null || tratamiento.getMedicamentos().isEmpty()) {
-            throw new IllegalArgumentException("Los medicamentos son obligatorios");
-        }
-        if (!citaDAO.buscarId(tratamiento.getIdCita())) {
+
+        validarTratamiento(tratamiento);
+
+        if (citaDAO.buscarId(tratamiento.getIdCita()) == null) {
             throw new IllegalArgumentException("La cita asociada no existe");
         }
 
@@ -68,32 +56,57 @@ public class TratamientoBO {
             throw new RuntimeException("Error al actualizar el tratamiento");
         }
     }
-    //elimina un tratamiento por ID
 
+    /**
+     * Elimina un tratamiento por ID.
+     */
     public void eliminarTratamiento(int id) {
-        if (!tratamientoDAO.buscarId(id)) {
+        TratamientoDominio tratamiento = tratamientoDAO.buscarId(id);
+        if (tratamiento == null) {
             throw new IllegalArgumentException("Tratamiento no existe");
         }
-        boolean eliminado = tratamientoDAO.delete(id);
 
+        boolean eliminado = tratamientoDAO.delete(id);
         if (!eliminado) {
             throw new RuntimeException("Error al eliminar el tratamiento");
         }
     }
-    //lista todos los tratamientos
 
-    public void listarTratamientos() {
-        boolean listados = tratamientoDAO.readall();
-        if (!listados) {
-            throw new RuntimeException("Error al listar los tratamientos");
+    /**
+     * Lista todos los tratamientos.
+     */
+    public List<TratamientoDominio> listarTratamientos() {
+        List<TratamientoDominio> tratamientos = tratamientoDAO.readall();
+        if (tratamientos == null || tratamientos.isEmpty()) {
+            throw new RuntimeException("No se encontraron tratamientos");
         }
+        return tratamientos;
     }
 
-    //busca un tratamiento por ID
-    public void buscarTratamiento(int id) {
-        boolean encontrado = tratamientoDAO.buscarId(id);
-        if (!encontrado) {
+    /**
+     * Busca un tratamiento por ID.
+     */
+    public TratamientoDominio buscarTratamiento(int id) {
+        TratamientoDominio tratamiento = tratamientoDAO.buscarId(id);
+        if (tratamiento == null) {
             throw new IllegalArgumentException("Tratamiento no encontrado");
+        }
+        return tratamiento;
+    }
+
+    /**
+     * Validaciones comunes para registrar y actualizar.
+     */
+    private void validarTratamiento(TratamientoDTO tratamiento) {
+        if (tratamiento.getDescripcion() == null || tratamiento.getDescripcion().isEmpty()) {
+            throw new IllegalArgumentException("La descripción es obligatoria");
+        }
+        if (tratamiento.getDuracion() == null || tratamiento.getDuracion().isEmpty()) {
+            throw new IllegalArgumentException("La duración es obligatoria");
+        }
+        if (tratamiento.getMedicamentos() == null || tratamiento.getMedicamentos().isEmpty()) {
+            throw new IllegalArgumentException("Los medicamentos son obligatorios");
         }
     }
 }
+

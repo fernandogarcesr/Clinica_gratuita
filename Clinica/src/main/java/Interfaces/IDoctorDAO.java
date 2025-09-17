@@ -16,11 +16,12 @@ import Dominios.DoctorDominio;
  */
 
 public interface IDoctorDAO {
-    boolean insert(DoctorDTO paciente);
+    boolean insert(DoctorDTO doctor);
     boolean delete(int id);
     List<DoctorDominio> readall();
-    boolean update(DoctorDTO paciente);
+    boolean update(DoctorDTO doctor);
     DoctorDominio buscarId(int id);
-   
+    DoctorDominio buscarDoctor(DoctorDTO doctor);
+    
     
 }

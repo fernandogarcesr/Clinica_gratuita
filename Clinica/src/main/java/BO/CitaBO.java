@@ -1,10 +1,12 @@
 package BO;
 
 import DTO.CitaDTO;
+import Dominios.CitaDominio;
 import Interfaces.IPacienteDAO;
 import Interfaces.ICitaDAO;
 import Interfaces.IDoctorDAO;
 import Interfaces.ITratamientoDAO;
+import java.util.List;
 
 /**
  *
@@ -25,29 +27,15 @@ public class CitaBO {
     }
 
     /**
-     * Programa una nueva cita. Valida campos obligatorios, estado valido,
-     * paciente y doctor existentes.
-     *
-     * @param cita
+     * Programa una nueva cita.
      */
     public void programarCita(CitaDTO cita) {
-        if (cita.getMotivo() == null || cita.getMotivo().isEmpty()) {
-            throw new IllegalArgumentException("El motivo es obligatorio");
-        }
-        if (cita.getFechaHora() == null) {
-            throw new IllegalArgumentException("La fecha y hora son obligatorias");
-        }
-        if (cita.getEstado() == null
-                || (!cita.getEstado().equals("Programada")
-                && !cita.getEstado().equals("En curso")
-                && !cita.getEstado().equals("Completada")
-                && !cita.getEstado().equals("Cancelada"))) {
-            throw new IllegalArgumentException("Estado invalido");
-        }
-        if (!pacienteDAO.buscarId(cita.getIdPaciente())) {
+        validarCita(cita);
+
+        if (pacienteDAO.buscarId(cita.getIdPaciente()) == null) {
             throw new IllegalArgumentException("Paciente no existe");
         }
-        if (!doctorDAO.buscarId(cita.getIdDoctor())) {
+        if (doctorDAO.buscarId(cita.getIdDoctor()) == null) {
             throw new IllegalArgumentException("Doctor no existe");
         }
 
@@ -57,47 +45,42 @@ public class CitaBO {
         }
     }
 
-    //actualiza una cita existente
+    /**
+     * Actualiza una cita existente.
+     */
     public void actualizarCita(CitaDTO cita) {
-        if (!citaDAO.buscarId(cita.getId())) {
+        CitaDominio existente = citaDAO.buscarCita(cita);
+        if (existente == null) {
             throw new IllegalArgumentException("Cita no existe");
         }
 
-        // Validaciones de campos obligatorios
-        if (cita.getMotivo() == null || cita.getMotivo().isEmpty()) {
-            throw new IllegalArgumentException("El motivo es obligatorio");
-        }
-        if (cita.getFechaHora() == null) {
-            throw new IllegalArgumentException("La fecha y hora son obligatorias");
-        }
-        if (cita.getEstado() == null
-                || (!cita.getEstado().equals("Programada")
-                && !cita.getEstado().equals("En curso")
-                && !cita.getEstado().equals("Completada")
-                && !cita.getEstado().equals("Cancelada"))) {
-            throw new IllegalArgumentException("Estado invalido");
-        }
-        if (!pacienteDAO.buscarId(cita.getIdPaciente())) {
+        validarCita(cita);
+
+        if (pacienteDAO.buscarId(cita.getIdPaciente()) == null) {
             throw new IllegalArgumentException("Paciente no existe");
         }
-        if (!doctorDAO.buscarId(cita.getIdDoctor())) {
+        if (doctorDAO.buscarId(cita.getIdDoctor()) == null) {
             throw new IllegalArgumentException("Doctor no existe");
         }
+
         boolean actualizada = citaDAO.update(cita);
         if (!actualizada) {
             throw new RuntimeException("Error al actualizar la cita");
         }
     }
-    //elimina una cita por ID
-    //valida si esta asociada a un tratamiento
 
+    /**
+     * Elimina una cita por ID.
+     */
     public void eliminarCita(int id) {
-        if (!citaDAO.buscarId(id)) {
+        CitaDominio cita = citaDAO.buscarId(id);
+        if (cita == null) {
             throw new IllegalArgumentException("Cita no existe");
         }
+
         boolean tieneTratamientos = tratamientoDAO.existeTratamientoPorCita(id);
         if (tieneTratamientos) {
-            throw new IllegalStateException("No se puede eliminar la cita por que tiene tratamientos asociados.");
+            throw new IllegalStateException("No se puede eliminar la cita porque tiene tratamientos asociados.");
         }
 
         boolean eliminada = citaDAO.delete(id);
@@ -106,20 +89,44 @@ public class CitaBO {
         }
     }
 
-    //lista todas las citas
-    public void listarCitas() {
-        boolean listadas = citaDAO.readall();
-        if (!listadas) {
-            throw new RuntimeException("Error al listar las citas");
+    /**
+     * Lista todas las citas.
+     */
+    public List<CitaDominio> listarCitas() {
+        List<CitaDominio> citas = citaDAO.readall();
+        if (citas == null || citas.isEmpty()) {
+            throw new RuntimeException("No se encontraron citas");
         }
+        return citas;
     }
 
-    //busca una cita por ID
-    public void buscarCita(int id) {
-        boolean encotrada = citaDAO.buscarId(id);
-        if (!encotrada) {
+    /**
+     * Busca una cita por ID.
+     */
+    public CitaDominio buscarCita(int id) {
+        CitaDominio cita = citaDAO.buscarId(id);
+        if (cita == null) {
             throw new IllegalArgumentException("Cita no encontrada");
         }
+        return cita;
     }
 
+    /**
+     * Validaciones comunes para programar y actualizar.
+     */
+    private void validarCita(CitaDTO cita) {
+        if (cita.getMotivo() == null || cita.getMotivo().isEmpty()) {
+            throw new IllegalArgumentException("El motivo es obligatorio");
+        }
+        if (cita.getFechaHora() == null) {
+            throw new IllegalArgumentException("La fecha y hora son obligatorias");
+        }
+        if (cita.getEstado() == null ||
+            (!cita.getEstado().equals("Programada") &&
+             !cita.getEstado().equals("En curso") &&
+             !cita.getEstado().equals("Completada") &&
+             !cita.getEstado().equals("Cancelada"))) {
+            throw new IllegalArgumentException("Estado inválido");
+        }
+    }
 }
