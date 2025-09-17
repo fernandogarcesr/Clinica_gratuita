@@ -8,18 +8,18 @@ package Dominios;
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public class DoctoresDominio {
+public class DoctorDominio {
     private int id_doctor;
     private String nombre;
     private String especialidad;
     private String telefono;
     private String email;
 
-    public DoctoresDominio() {
+    public DoctorDominio() {
     }
 
     
-    public DoctoresDominio(int id_doctor, String nombre, String especialidad, String telefono, String email) {
+    public DoctorDominio(int id_doctor, String nombre, String especialidad, String telefono, String email) {
         this.id_doctor = id_doctor;
         this.nombre = nombre;
         this.especialidad = especialidad;

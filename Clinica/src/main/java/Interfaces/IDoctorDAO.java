@@ -4,19 +4,23 @@
  */
 package Interfaces;
 
-import DTO.DoctoresDTO;
-import Dominios.DoctoresDominio;
+
 import java.util.List;
+
+import DTO.DoctorDTO;
+import Dominios.DoctorDominio;
 
 /**
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public interface IDoctoresDAO {
-    boolean insert(DoctoresDTO doctor);
+
+public interface IDoctorDAO {
+    boolean insert(DoctorDTO paciente);
     boolean delete(int id);
-    List<DoctoresDominio> readall();
-    boolean update(DoctoresDTO doctor);
-    DoctoresDominio buscarId(int id);
+    List<DoctorDominio> readall();
+    boolean update(DoctorDTO paciente);
+    DoctorDominio buscarId(int id);
+   
     
 }

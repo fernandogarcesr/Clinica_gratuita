@@ -2,29 +2,38 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DTO;
+package Dominios;
 
 /**
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public class TratamientosDTO {
+public class TratamientoDominio {
+    private int id_tratamiento;
     private String descripcion;
     private String duracion;
     private String medicamentos;
     private int id_cita;
 
-    public TratamientosDTO() {
+    public TratamientosDominios() {
     }
     
     
-    public TratamientosDTO(String descripcion, String duracion, String medicamentos, int id_cita) {
+    public TratamientosDominios(int id_tratamiento, String descripcion, String duracion, String medicamentos, int id_cita) {
+        this.id_tratamiento = id_tratamiento;
         this.descripcion = descripcion;
         this.duracion = duracion;
         this.medicamentos = medicamentos;
         this.id_cita = id_cita;
     }
 
+    public int getId_tratamiento() {
+        return id_tratamiento;
+    }
+
+    public void setId_tratamiento(int id_tratamiento) {
+        this.id_tratamiento = id_tratamiento;
+    }
 
     public String getDescripcion() {
         return descripcion;
@@ -60,7 +69,8 @@ public class TratamientosDTO {
 
     @Override
     public String toString() {
-        return "TratamientosDominios{" + ", descripcion=" + descripcion + ", duracion=" + duracion + ", medicamentos=" + medicamentos + ", id_cita=" + id_cita + '}';
+        return "TratamientosDominios{" + "id_tratamiento=" + id_tratamiento + ", descripcion=" + descripcion + ", duracion=" + duracion + ", medicamentos=" + medicamentos + ", id_cita=" + id_cita + '}';
     }
 
+    
 }

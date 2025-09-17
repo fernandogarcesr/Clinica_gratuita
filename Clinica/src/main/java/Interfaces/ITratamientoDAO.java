@@ -4,17 +4,21 @@
  */
 package Interfaces;
 
-import DTO.TratamientosDTO;
+import DTO.TratamientoDTO;
+import Dominios.TratamientoDominio;
+import java.util.List;
 
 /**
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
 public interface ITratamientoDAO {
-    boolean insert(TratamientosDTO paciente);
+
+    boolean insert(TratamientoDTO paciente);
     boolean delete(int id);
-    boolean readall();
-    boolean update(TratamientosDTO paciente);
-    boolean buscarId(int id);
+    List<TratamientoDominio> readall();
+    boolean update(TratamientoDTO paciente);
+    TratamientoDominio buscarId(int id);
+    boolean existeTratamientoPorCita(int id_citas);
     
 }

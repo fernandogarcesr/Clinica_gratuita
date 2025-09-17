@@ -11,7 +11,7 @@ import java.sql.Date;
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public class CitasDominio{
+public class CitaDominio{
     private int id_citas;
     private String motivo;
     private Date fechaHora;

@@ -11,14 +11,14 @@ import java.sql.Date;
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public class CitasDTO {
+public class CitaDTO {
     private String motivo;
     private Date fechaHora;
     private Estado estado;
     private int id_doctor;
     private int id_paciente;
 
-    public CitasDTO(String motivo, Date fechaHora, Estado estado, int id_doctor, int id_paciente) {
+    public CitaDTO(String motivo, Date fechaHora, Estado estado, int id_doctor, int id_paciente) {
         this.motivo = motivo;
         this.fechaHora = fechaHora;
         this.estado = estado;
@@ -26,7 +26,7 @@ public class CitasDTO {
         this.id_paciente = id_paciente;
     }
 
-    public CitasDTO() {
+    public CitaDTO() {
     }
 
 
@@ -54,19 +54,19 @@ public class CitasDTO {
         this.estado = estado;
     }
 
-    public int getId_doctor() {
+    public int getIdDoctor() {
         return id_doctor;
     }
 
-    public void setId_doctor(int id_doctor) {
+    public void setIdDoctor(int id_doctor) {
         this.id_doctor = id_doctor;
     }
 
-    public int getId_paciente() {
+    public int getIdPaciente() {
         return id_paciente;
     }
 
-    public void setId_paciente(int id_paciente) {
+    public void setIdPaciente(int id_paciente) {
         this.id_paciente = id_paciente;
     }
 

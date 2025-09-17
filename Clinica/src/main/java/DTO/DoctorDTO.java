@@ -8,7 +8,7 @@ package DTO;
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public class DoctoresDTO {
+public class DoctorDTO {
     
     private String nombre;
     private String especialidad;

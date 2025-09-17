@@ -10,7 +10,7 @@ import Dominios.ENUM.Sexo;
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public class PacientesDominio {
+public class PacienteDominio {
 
     private int id_paciente;
     private String nombre;
@@ -20,10 +20,10 @@ public class PacientesDominio {
     private String telefono;
     private String email;
 
-    public PacientesDominio() {
+    public PacienteDominio() {
     }
 
-    public PacientesDominio(int id_paciente, String nombre, int edad, Sexo sexo, String direccion, String telefono, String email) {
+    public PacienteDominio(int id_paciente, String nombre, int edad, Sexo sexo, String direccion, String telefono, String email) {
         this.id_paciente = id_paciente;
         this.nombre = nombre;
         this.edad = edad;
