@@ -89,4 +89,9 @@ public class PacientesDominio {
         this.email = email;
     }
 
+    @Override
+    public String toString() {
+        return "PacientesDominio{" + "id_paciente=" + id_paciente + ", nombre=" + nombre + ", edad=" + edad + ", sexo=" + sexo + ", direccion=" + direccion + ", telefono=" + telefono + ", email=" + email + '}';
+    }
+
 }

@@ -66,6 +66,11 @@ public class DoctoresDominio {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public String toString() {
+        return "DoctoresDominio{" + "id_doctor=" + id_doctor + ", nombre=" + nombre + ", especialidad=" + especialidad + ", telefono=" + telefono + ", email=" + email + '}';
+    }
     
     
     

@@ -10,7 +10,7 @@ import DTO.TratamientosDTO;
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public interface ITratamientosDAO {
+public interface ITratamientoDAO {
     boolean insert(TratamientosDTO paciente);
     boolean delete(int id);
     boolean readall();
