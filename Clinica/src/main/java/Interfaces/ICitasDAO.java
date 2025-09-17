@@ -16,6 +16,7 @@ public interface ICitasDAO {
     boolean readall();
     boolean update(CitasDTO paciente);
     boolean buscarId(int id);
-    
+    boolean existeCitaPorPaciente(int id_paciente);
+    boolean existeCitaPorDoctor(int id_doctor);
     
 }

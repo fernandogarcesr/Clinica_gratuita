@@ -16,5 +16,6 @@ public interface ITratamientosDAO {
     boolean readall();
     boolean update(TratamientosDTO paciente);
     boolean buscarId(int id);
+    boolean existeTratamientoPorCita(int id_citas);
     
 }

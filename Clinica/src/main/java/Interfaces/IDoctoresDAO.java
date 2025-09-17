@@ -16,5 +16,6 @@ public interface IDoctoresDAO {
     boolean readall();
     boolean update(DoctoresDTO paciente);
     boolean buscarId(int id);
+   
     
 }
