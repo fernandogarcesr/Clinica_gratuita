@@ -2,8 +2,8 @@
 package BO;
 
 import DTO.PacienteDTO;
-import Interfaces.ICitasDAO;
 import Interfaces.IPacienteDAO;
+import Interfaces.ICitaDAO;
 
 /**
  *
@@ -12,9 +12,9 @@ import Interfaces.IPacienteDAO;
 public class PacienteBO {
 
     private IPacienteDAO pacienteDAO;
-    private ICitasDAO citaDAO;
+    private ICitaDAO citaDAO;
 
-    public PacienteBO(IPacienteDAO pacienteDAO, ICitasDAO citaDAO) {
+    public PacienteBO(IPacienteDAO pacienteDAO, ICitaDAO citaDAO) {
         this.pacienteDAO = pacienteDAO;
         this.citaDAO = citaDAO;
     }

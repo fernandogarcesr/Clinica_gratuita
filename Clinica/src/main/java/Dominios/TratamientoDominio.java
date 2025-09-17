@@ -8,7 +8,7 @@ package Dominios;
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public class TratamientosDominios {
+public class TratamientoDominio {
     private int id_tratamiento;
     private String descripcion;
     private String duracion;

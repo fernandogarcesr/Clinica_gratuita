@@ -4,17 +4,17 @@
  */
 package Interfaces;
 
-import DTO.CitasDTO;
+import DTO.CitaDTO;
 
 /**
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public interface ICitasDAO {
-    boolean insert(CitasDTO paciente);
+public interface ICitaDAO {
+    boolean insert(CitaDTO paciente);
     boolean delete(int id);
     boolean readall();
-    boolean update(CitasDTO paciente);
+    boolean update(CitaDTO paciente);
     boolean buscarId(int id);
     boolean existeCitaPorPaciente(int id_paciente);
     boolean existeCitaPorDoctor(int id_doctor);

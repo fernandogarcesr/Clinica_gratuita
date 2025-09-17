@@ -1,8 +1,8 @@
 package BO;
 
-import DTO.DoctoresDTO;
-import Interfaces.ICitasDAO;
-import Interfaces.IDoctoresDAO;
+import DTO.DoctorDTO;
+import Interfaces.ICitaDAO;
+import Interfaces.IDoctorDAO;
 
 /**
  *
@@ -10,10 +10,10 @@ import Interfaces.IDoctoresDAO;
  */
 public class DoctorBO {
 
-    private IDoctoresDAO doctorDAO;
-    private ICitasDAO citaDAO;
+    private IDoctorDAO doctorDAO;
+    private ICitaDAO citaDAO;
 
-    public DoctorBO(IDoctoresDAO doctorDAO, ICitasDAO citaDAO) {
+    public DoctorBO(IDoctorDAO doctorDAO, ICitaDAO citaDAO) {
         this.doctorDAO = doctorDAO;
         this.citaDAO = citaDAO;
     }
@@ -23,7 +23,7 @@ public class DoctorBO {
      * Valida campos obligatorios y llama al DAO para insertar.
      * @param doctor 
      */
-    public void registrarDoctor(DoctoresDTO doctor) {
+    public void registrarDoctor(DoctorDTO doctor) {
         if (doctor.getNombre() == null || doctor.getNombre().isEmpty()) {
             throw new IllegalArgumentException("El nombre es obligatorio");
         }
@@ -47,7 +47,7 @@ public class DoctorBO {
     * Valida que exista y que los campos obligatorios no sean nulos.
     * @param doctor 
     */
-    public void actualizarDoctor(DoctoresDTO doctor) {
+    public void actualizarDoctor(DoctorDTO doctor) {
         if (!doctorDAO.buscarId(doctor.getId())) {
             throw new IllegalArgumentException("Doctor no existe");
         }

@@ -4,18 +4,18 @@
  */
 package Interfaces;
 
-import DTO.TratamientosDTO;
+import DTO.DoctorDTO;
 
 /**
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public interface ITratamientosDAO {
-    boolean insert(TratamientosDTO paciente);
+public interface IDoctorDAO {
+    boolean insert(DoctorDTO paciente);
     boolean delete(int id);
     boolean readall();
-    boolean update(TratamientosDTO paciente);
+    boolean update(DoctorDTO paciente);
     boolean buscarId(int id);
-    boolean existeTratamientoPorCita(int id_citas);
+   
     
 }

@@ -8,6 +8,6 @@ package DTO;
  *
  * @author Jesus Gammael Soto Escalante 248336
  */
-public class CitasDTO {
+public class DoctorDTO {
     
 }

@@ -1,8 +1,8 @@
 package BO;
 
-import DTO.TratamientosDTO;
-import Interfaces.ICitasDAO;
-import Interfaces.ITratamientosDAO;
+import DTO.TratamientoDTO;
+import Interfaces.ICitaDAO;
+import Interfaces.ITratamientoDAO;
 
 /**
  *
@@ -10,10 +10,10 @@ import Interfaces.ITratamientosDAO;
  */
 public class TratamientoBO {
 
-    private ITratamientosDAO tratamientoDAO;
-    private ICitasDAO citaDAO;
+    private ITratamientoDAO tratamientoDAO;
+    private ICitaDAO citaDAO;
 
-    public TratamientoBO(ITratamientosDAO tratamientoDAO, ICitasDAO citaDAO) {
+    public TratamientoBO(ITratamientoDAO tratamientoDAO, ICitaDAO citaDAO) {
         this.tratamientoDAO = tratamientoDAO;
         this.citaDAO = citaDAO;
     }
@@ -24,7 +24,7 @@ public class TratamientoBO {
      *
      * @param tratamiento
      */
-    public void registrarTratamiento(TratamientosDTO tratamiento) {
+    public void registrarTratamiento(TratamientoDTO tratamiento) {
         if (tratamiento.getDescripcion() == null || tratamiento.getDescripcion().isEmpty()) {
             throw new IllegalArgumentException("La descripcion es obligatoria");
         }
@@ -45,7 +45,7 @@ public class TratamientoBO {
     }
     //actualiza el tratamiento existente
 
-    public void actualizarTratamiento(TratamientosDTO tratamiento) {
+    public void actualizarTratamiento(TratamientoDTO tratamiento) {
         if (!tratamientoDAO.buscarId(tratamiento.getId())) {
             throw new IllegalArgumentException("Tratamiento no existe");
         }

@@ -1,10 +1,10 @@
 package BO;
 
-import DTO.CitasDTO;
-import Interfaces.ICitasDAO;
-import Interfaces.IDoctoresDAO;
+import DTO.CitaDTO;
 import Interfaces.IPacienteDAO;
-import Interfaces.ITratamientosDAO;
+import Interfaces.ICitaDAO;
+import Interfaces.IDoctorDAO;
+import Interfaces.ITratamientoDAO;
 
 /**
  *
@@ -12,12 +12,12 @@ import Interfaces.ITratamientosDAO;
  */
 public class CitaBO {
 
-    private ICitasDAO citaDAO;
+    private ICitaDAO citaDAO;
     private IPacienteDAO pacienteDAO;
-    private IDoctoresDAO doctorDAO;
-    private ITratamientosDAO tratamientoDAO;
+    private IDoctorDAO doctorDAO;
+    private ITratamientoDAO tratamientoDAO;
 
-    public CitaBO(ICitasDAO citaDAO, IPacienteDAO pacienteDAO, IDoctoresDAO doctorDAO, ITratamientosDAO tratamientoDAO) {
+    public CitaBO(ICitaDAO citaDAO, IPacienteDAO pacienteDAO, IDoctorDAO doctorDAO, ITratamientoDAO tratamientoDAO) {
         this.citaDAO = citaDAO;
         this.pacienteDAO = pacienteDAO;
         this.doctorDAO = doctorDAO;
@@ -30,7 +30,7 @@ public class CitaBO {
      *
      * @param cita
      */
-    public void programarCita(CitasDTO cita) {
+    public void programarCita(CitaDTO cita) {
         if (cita.getMotivo() == null || cita.getMotivo().isEmpty()) {
             throw new IllegalArgumentException("El motivo es obligatorio");
         }
@@ -58,7 +58,7 @@ public class CitaBO {
     }
 
     //actualiza una cita existente
-    public void actualizarCita(CitasDTO cita) {
+    public void actualizarCita(CitaDTO cita) {
         if (!citaDAO.buscarId(cita.getId())) {
             throw new IllegalArgumentException("Cita no existe");
         }
