@@ -14,10 +14,10 @@ import java.util.List;
  */
 public interface ITratamientoDAO {
 
-    boolean insert(TratamientoDTO paciente);
+    boolean insert(TratamientoDTO tratamiento);
     boolean delete(int id);
     List<TratamientoDominio> readall();
-    boolean update(TratamientoDTO paciente);
+    boolean update(TratamientoDTO tratamiento);
     TratamientoDominio buscarId(int id);
     TratamientoDominio buscarTratamiento(TratamientoDTO tratamiento);
     boolean existeTratamientoPorCita(int id_citas);
