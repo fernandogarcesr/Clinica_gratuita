@@ -7,8 +7,9 @@ package Dominios;
 import Dominios.ENUM.Sexo;
 
 /**
+ * Clase de Paciente dominio usado como una clase POJO, estas clases solo están
+ * usadas para regresar el objeto desde la base de datos
  *
- * @author Jesus Gammael Soto Escalante 248336
  */
 public class PacienteDominio {
 

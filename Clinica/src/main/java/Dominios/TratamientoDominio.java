@@ -5,8 +5,9 @@
 package Dominios;
 
 /**
+ * Clase de tratamiento dominio usado como una clase POJO, estas clases solo están
+ * usadas para regresar el objeto desde la base de datos
  *
- * @author Jesus Gammael Soto Escalante 248336
  */
 public class TratamientoDominio {
     private int id_tratamiento;

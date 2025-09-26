@@ -9,8 +9,9 @@ import Interfaces.ITratamientoDAO;
 import java.util.List;
 
 /**
- *
- * @author Jesus Gammael Soto Escalante 248336
+ * Clase de negocio encargada de gestionar las operaciones relacionadas con citas médicas.
+ * Valida datos, verifica relaciones con pacientes, doctores y tratamientos,
+ * y delega las operaciones CRUD al DAO correspondiente.
  */
 public class CitaBO {
 
@@ -19,6 +20,14 @@ public class CitaBO {
     private IDoctorDAO doctorDAO;
     private ITratamientoDAO tratamientoDAO;
 
+    /**
+     * Constructor que recibe las dependencias necesarias para operar sobre citas.
+     *
+     * @param citaDAO DAO para operaciones de cita.
+     * @param pacienteDAO DAO para validación de pacientes.
+     * @param doctorDAO DAO para validación de doctores.
+     * @param tratamientoDAO DAO para validación de tratamientos asociados.
+     */
     public CitaBO(ICitaDAO citaDAO, IPacienteDAO pacienteDAO, IDoctorDAO doctorDAO, ITratamientoDAO tratamientoDAO) {
         this.citaDAO = citaDAO;
         this.pacienteDAO = pacienteDAO;
@@ -27,7 +36,12 @@ public class CitaBO {
     }
 
     /**
-     * Programa una nueva cita.
+     * Programa una nueva cita médica.
+     * Valida los campos obligatorios y verifica que el paciente y el doctor existan.
+     *
+     * @param cita Objeto DTO con los datos de la cita a registrar.
+     * @throws IllegalArgumentException si los datos son inválidos o las entidades relacionadas no existen.
+     * @throws RuntimeException si ocurre un error al insertar la cita.
      */
     public void programarCita(CitaDTO cita) {
         validarCita(cita);
@@ -46,7 +60,12 @@ public class CitaBO {
     }
 
     /**
-     * Actualiza una cita existente.
+     * Actualiza los datos de una cita existente.
+     * Verifica que la cita exista, valida los campos y confirma que el paciente y el doctor estén registrados.
+     *
+     * @param cita Objeto DTO con los nuevos datos de la cita.
+     * @throws IllegalArgumentException si la cita no existe o los datos son inválidos.
+     * @throws RuntimeException si ocurre un error al actualizar la cita.
      */
     public void actualizarCita(CitaDTO cita) {
         CitaDominio existente = citaDAO.buscarCita(cita);
@@ -70,7 +89,13 @@ public class CitaBO {
     }
 
     /**
-     * Elimina una cita por ID.
+     * Elimina una cita por su identificador.
+     * Verifica que la cita exista y que no tenga tratamientos asociados.
+     *
+     * @param id Identificador de la cita a eliminar.
+     * @throws IllegalArgumentException si la cita no existe.
+     * @throws IllegalStateException si la cita tiene tratamientos asociados.
+     * @throws RuntimeException si ocurre un error al eliminar la cita.
      */
     public void eliminarCita(int id) {
         CitaDominio cita = citaDAO.buscarId(id);
@@ -90,7 +115,10 @@ public class CitaBO {
     }
 
     /**
-     * Lista todas las citas.
+     * Recupera todas las citas registradas en el sistema.
+     *
+     * @return Lista de objetos CitaDominio con la información completa de cada cita.
+     * @throws RuntimeException si no se encuentran citas o ocurre un error de lectura.
      */
     public List<CitaDominio> listarCitas() {
         List<CitaDominio> citas = citaDAO.readall();
@@ -101,7 +129,11 @@ public class CitaBO {
     }
 
     /**
-     * Busca una cita por ID.
+     * Busca una cita por su identificador único.
+     *
+     * @param id Identificador de la cita.
+     * @return Objeto CitaDominio si se encuentra; null si no existe.
+     * @throws IllegalArgumentException si la cita no se encuentra.
      */
     public CitaDominio buscarCita(int id) {
         CitaDominio cita = citaDAO.buscarId(id);
@@ -112,7 +144,11 @@ public class CitaBO {
     }
 
     /**
-     * Validaciones comunes para programar y actualizar.
+     * Valida los campos obligatorios de una cita.
+     * Verifica que el motivo, la fecha/hora y el estado sean válidos.
+     *
+     * @param cita Objeto DTO a validar.
+     * @throws IllegalArgumentException si algún campo obligatorio es nulo o inválido.
      */
     private void validarCita(CitaDTO cita) {
         if (cita.getMotivo() == null || cita.getMotivo().isEmpty()) {

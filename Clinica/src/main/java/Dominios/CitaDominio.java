@@ -8,10 +8,12 @@ import Dominios.ENUM.Estado;
 import java.sql.Date;
 
 /**
+ * Clase de Cita dominio usado como una clase POJO, estas clases solo están
+ * usadas para regresar el objeto desde la base de datos
  *
- * @author Jesus Gammael Soto Escalante 248336
  */
-public class CitaDominio{
+public class CitaDominio {
+
     private int id_citas;
     private String motivo;
     private Date fechaHora;
@@ -83,7 +85,5 @@ public class CitaDominio{
     public String toString() {
         return "CitasDominio{" + "id_citas=" + id_citas + ", motivo=" + motivo + ", fechaHora=" + fechaHora + ", estado=" + estado + ", id_doctor=" + id_doctor + ", id_paciente=" + id_paciente + '}';
     }
-    
-    
-    
+
 }
