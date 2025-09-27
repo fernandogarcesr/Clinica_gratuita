@@ -1,0 +1,81 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package Dominios;
+
+/**
+ * Clase de Doctro dominio usado como una clase POJO, estas clases solo están
+ * usadas para regresar el objeto desde la base de datos
+ *
+ */
+public class DoctorDominio {
+    private int id_doctor;
+    private String nombre;
+    private String especialidad;
+    private String telefono;
+    private String email;
+
+    public DoctorDominio() {
+    }
+
+    
+    public DoctorDominio(int id_doctor, String nombre, String especialidad, String telefono, String email) {
+        this.id_doctor = id_doctor;
+        this.nombre = nombre;
+        this.especialidad = especialidad;
+        this.telefono = telefono;
+        this.email = email;
+    }
+
+    public int getId_doctor() {
+        return id_doctor;
+    }
+
+    public void setId_doctor(int id_doctor) {
+        this.id_doctor = id_doctor;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "DoctoresDominio{" + "id_doctor=" + id_doctor + ", nombre=" + nombre + ", especialidad=" + especialidad + ", telefono=" + telefono + ", email=" + email + '}';
+    }
+    
+    
+    
+    
+    
+    
+}
