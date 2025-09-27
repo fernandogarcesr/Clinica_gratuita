@@ -6,7 +6,7 @@ package Dominios.ENUM;
 
 /**
  *
- * @author Jesus Gammael Soto Escalante 248336
+ * Clase para determinar el dominio sobre el estado de la cita
  */
 public enum Estado {
     PROGRAMADA,

@@ -5,13 +5,16 @@
 package DTO;
 
 import Dominios.ENUM.Estado;
+
 import java.sql.Date;
 
 /**
  *
- * @author Jesus Gammael Soto Escalante 248336
+ * Clases DTO (data trasfer object) usada para guardar en la base de datos ya
+ * que esta no contiene un id, pero usa los datos necesarios para este
  */
 public class CitaDTO {
+
     private String motivo;
     private Date fechaHora;
     private Estado estado;
@@ -28,7 +31,6 @@ public class CitaDTO {
 
     public CitaDTO() {
     }
-
 
     public String getMotivo() {
         return motivo;
@@ -74,6 +76,5 @@ public class CitaDTO {
     public String toString() {
         return "CitasDominio{" + ", motivo=" + motivo + ", fechaHora=" + fechaHora + ", estado=" + estado + ", id_doctor=" + id_doctor + ", id_paciente=" + id_paciente + '}';
     }
-    
-    
+
 }

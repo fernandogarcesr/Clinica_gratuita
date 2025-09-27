@@ -6,10 +6,11 @@ package DTO;
 
 /**
  *
- * @author Jesus Gammael Soto Escalante 248336
+ * Clases DTO (data trasfer object) usada para guardar en la base de datos ya
+ * que esta no contiene un id, pero usa los datos necesarios para este
  */
 public class DoctorDTO {
-    
+
     private String nombre;
     private String especialidad;
     private String telefono;
@@ -18,8 +19,7 @@ public class DoctorDTO {
     public DoctorDTO() {
     }
 
-    
-    public DoctorDTO( String nombre, String especialidad, String telefono, String email) {
+    public DoctorDTO(String nombre, String especialidad, String telefono, String email) {
         this.nombre = nombre;
         this.especialidad = especialidad;
         this.telefono = telefono;
@@ -62,8 +62,5 @@ public class DoctorDTO {
     public String toString() {
         return "DoctoresDominio{" + ", nombre=" + nombre + ", especialidad=" + especialidad + ", telefono=" + telefono + ", email=" + email + '}';
     }
-    
-    
-    
 
 }

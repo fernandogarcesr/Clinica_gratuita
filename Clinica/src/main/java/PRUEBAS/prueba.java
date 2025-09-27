@@ -15,11 +15,10 @@ import Dominios.ENUM.Sexo;
 public class prueba {
 
     public static void main(String[] args) {
+        PacienteDAO pdao = new PacienteDAO();
 
-        
-        
-        
-        
+        System.out.println(pdao.insert(new PacienteDTO("Gamma prueba", 20, Sexo.FEMENINO, "5to qlo", "666", "chichis.com"))
+        );
 
     }
 

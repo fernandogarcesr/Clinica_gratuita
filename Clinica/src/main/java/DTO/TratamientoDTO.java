@@ -5,12 +5,11 @@
 package DTO;
 
 /**
- *
- * @author Jesus Gammael Soto Escalante 248336
+ * Clases DTO (data trasfer object) usada para guardar en la base de datos ya
+ * que esta no contiene un id, pero usa los datos necesarios para este
  */
-
-    
 public class TratamientoDTO {
+
     private String descripcion;
     private String duracion;
     private String medicamentos;
@@ -18,14 +17,13 @@ public class TratamientoDTO {
 
     public TratamientoDTO() {
     }
-    
+
     public TratamientoDTO(String descripcion, String duracion, String medicamentos, int id_cita) {
         this.descripcion = descripcion;
         this.duracion = duracion;
         this.medicamentos = medicamentos;
         this.id_cita = id_cita;
     }
-
 
     public String getDescripcion() {
         return descripcion;

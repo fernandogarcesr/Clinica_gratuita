@@ -8,10 +8,11 @@ import Dominios.ENUM.Sexo;
 
 /**
  *
- * @author Jesus Gammael Soto Escalante 248336
+ * Clases DTO (data trasfer object) usada para guardar en la base de datos ya
+ * que esta no contiene un id, pero usa los datos necesarios para este
  */
 public class PacienteDTO {
-    
+
     private String nombre;
     private int edad;
     private Sexo sexo;
@@ -22,7 +23,7 @@ public class PacienteDTO {
     public PacienteDTO() {
     }
 
-    public PacienteDTO( String nombre, int edad, Sexo sexo, String direccion, String telefono, String email) {
+    public PacienteDTO(String nombre, int edad, Sexo sexo, String direccion, String telefono, String email) {
         this.nombre = nombre;
         this.edad = edad;
         this.sexo = sexo;
@@ -30,8 +31,6 @@ public class PacienteDTO {
         this.telefono = telefono;
         this.email = email;
     }
-
-
 
     public String getNombre() {
         return nombre;

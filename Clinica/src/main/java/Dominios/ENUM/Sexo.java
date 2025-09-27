@@ -6,7 +6,7 @@ package Dominios.ENUM;
 
 /**
  *
- * @author Jesus Gammael Soto Escalante 248336
+ * Clase usada para determinar el dominio sobre los generos que hay
  */
 public enum Sexo {
     MASCULINO,

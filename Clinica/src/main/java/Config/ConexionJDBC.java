@@ -4,41 +4,48 @@
  */
 package Config;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  *
- * @author Jesus Gammael Soto Escalante 248336
+ * Clase para la conexion a la base de datos
  */
 public class ConexionJDBC {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/clinica_gratuita";
-    private static final String USER = "root";
-    private static final String PASS = "Ensalada";
-    private static final String DRIVER = "com.mysql.cj.jdbc.driver";
+    private static String URL  ;
+    private static String USER  ;
+    private static String PASS  ;
+    private static String DRIVER  ;
 
-//    static {
-//        try(InputStream input = ConexionDB.class.getClassLoader().getResourceAsStream("db.properties")) {
-//            Properties proper= new Properties();
-//            if (input == null) {
-//                throw new RuntimeException("No se logró obtener el archivo de propiedades");
-//            }
-//            proper.load(input);
-//            
-//            URL=proper.getProperty("db.url");
-//            USER=proper.getProperty("db.USER");
-//            PASS=proper.getProperty("db.PASS");
-//            DRIVER=proper.getProperty("db.driver");
-//            
-//            Class.forName(DRIVER);
-//            
-//        } catch (IOException | ClassNotFoundException e) {
-//            throw new RuntimeException(e.getMessage());
-//                    
-//        }
-//    }
+    static {
+        try(InputStream input = ConexionJDBC.class.getClassLoader().getResourceAsStream("db.properties")) {
+            Properties proper= new Properties();
+            if (input == null) {
+                throw new RuntimeException("No se logró obtener el archivo de propiedades");
+            }
+            
+            proper.load(input);
+            URL=proper.getProperty("db.url");
+            USER=proper.getProperty("db.user");
+            PASS=proper.getProperty("db.pass");
+            DRIVER=proper.getProperty("db.driver");
+
+            System.out.println(URL);
+            System.out.println(USER);
+            System.out.println(PASS);
+            System.out.println(DRIVER);
+            Class.forName(DRIVER);
+            
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e.getMessage());
+                    
+        }
+    }
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
     }
