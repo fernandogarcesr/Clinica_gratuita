@@ -1,9 +1,8 @@
-package Presentacion.paneles;
-
-import javax.swing.*;
+package Clinica.src.main.java.Presentacion.paneles;
 
 import Presentacion.styles.*;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,9 +10,7 @@ import java.awt.event.MouseEvent;
 public class PnlMenu extends JPanel {
 
     boolean testeoColor = false;
-
     Style style = new Style();
-    PnlPerfil pnlPerfil;
 
     //Encabezado
     ContainerPanel encabezado = new ContainerPanel(style.frameX, 40, Color.PINK, testeoColor);
@@ -37,15 +34,13 @@ public class PnlMenu extends JPanel {
     Espaciador espacioh1 = new Espaciador(50, 20);
 
     //Declaración de paneles
-    PnlCitas citas;
-    PnlTratamientos tratamientos;
-    PnlDoctores doctores;
-    PnlPacientes pacientes;
+    PnlCitas citas = new PnlCitas();
+    PnlTratamientos tratamientos = new PnlTratamientos();
+    PnlDoctores doctores = new PnlDoctores();
+    PnlPacientes pacientes = new PnlPacientes();
 
 
     public PnlMenu() {
-
-        pnlPerfil = new PnlPerfil(this);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setOpaque(false);
@@ -104,7 +99,7 @@ public class PnlMenu extends JPanel {
         //Línea divisoria
         add(linea);
 
-        citas = new PnlCitas();
+        //citas = new PnlCitas();
         add(citas);
 
 
@@ -112,22 +107,6 @@ public class PnlMenu extends JPanel {
 
     }
 
-
-
-    public void verPerfil(){
-
-        mostracionPanelActual(false);
-
-        encabezado.setVisible(false);
-        contenedorMenu.setVisible(false);
-
-        add(pnlPerfil);
-        pnlPerfil.setVisible(true);
-
-        revalidate();
-        repaint();
-
-    }
 
     public void volverAInicio() {
         encabezado.setVisible(true);

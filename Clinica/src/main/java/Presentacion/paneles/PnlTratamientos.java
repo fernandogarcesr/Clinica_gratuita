@@ -1,6 +1,5 @@
-package Presentacion.paneles;
+package Clinica.src.main.java.Presentacion.paneles;
 
-import Presentacion.dialogs.registro.DlgRegistrarCita;
 import Presentacion.dialogs.registro.DlgRegistrarTratamiento;
 import Presentacion.paneles.elementos.PnlElementoTratamiento;
 import Presentacion.styles.*;
@@ -15,6 +14,7 @@ public class PnlTratamientos extends JPanel {
 
     Style style = new Style();
     boolean testeoColor = false;
+    PnlTratamientos pnlTratamientos = this;
 
     //Título
     ContainerPanel titulo = new ContainerPanel(style.frameX, 40, Color.RED, testeoColor);
@@ -59,23 +59,28 @@ public class PnlTratamientos extends JPanel {
         add(columnas);
 
 
-        //Campo de pruebas
-        PnlElementoTratamiento ejemplo = new PnlElementoTratamiento();
+        //----------PLACEHOLDER HARCODEADO-----------
+        PnlElementoTratamiento ejemplo = new PnlElementoTratamiento(pnlTratamientos);
         add(ejemplo);
+        //----------FIN DEL PLACEHOLDER-----------
+
 
         //----------LÓGICA AQUÍ----------
-        //cambiar este int por el array.length del control con los dtos
-        /*int x = 3; //int de ejemplo, cambiar
-        for(int i = 0; i < x; i++){
-            //PnlElementoTratamiento elementoTratamiento = new PnlElementoTratamiento(tratamiento);
-            //add(elementoTratamiento)
+        /*
+
+        for(int i = 0; i < tratamientos.length; i++){
+            PnlElementoTratamiento elementoTratamiento = new PnlElementoTratamiento(pnlTratamientos, tratamiento);
+            add(elementoTratamiento)
         }
-         */
+
+        */
+        //----------FIN DE LÓGICA----------
+
 
         btnRecetarTratamiento.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                DlgRegistrarTratamiento registrar = new DlgRegistrarTratamiento(null);
+                DlgRegistrarTratamiento registrar = new DlgRegistrarTratamiento(null, pnlTratamientos);
                 registrar.setVisible(true);
             }
         });
@@ -84,4 +89,13 @@ public class PnlTratamientos extends JPanel {
         setOpaque(false);
         setVisible(true);
     }
+
+    public void refresh() {
+
+        System.out.println("refresh pnlTratamientos");
+
+        revalidate();
+        repaint();
+    }
+
 }

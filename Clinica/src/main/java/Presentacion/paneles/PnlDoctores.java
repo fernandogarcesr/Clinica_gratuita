@@ -1,7 +1,6 @@
-package Presentacion.paneles;
+package Clinica.src.main.java.Presentacion.paneles;
 
 import Presentacion.dialogs.registro.DlgRegistrarDoctor;
-import Presentacion.dialogs.registro.DlgRegistrarTratamiento;
 import Presentacion.paneles.elementos.PnlElementoDoctor;
 import Presentacion.styles.*;
 
@@ -14,6 +13,7 @@ public class PnlDoctores extends JPanel {
 
     Style style = new Style();
     boolean testeoColor = false;
+    PnlDoctores pnlDoctores = this;
 
     //Título
     ContainerPanel titulo = new ContainerPanel(style.frameX, 40, Color.RED, testeoColor);
@@ -60,25 +60,28 @@ public class PnlDoctores extends JPanel {
         add(columnas);
 
 
-        //add containerpanel con un for que liste las doctores
-
-        //Campo de pruebas
-        PnlElementoDoctor ejemplo = new PnlElementoDoctor();
+        //----------PLACEHOLDER HARCODEADO-----------
+        PnlElementoDoctor ejemplo = new PnlElementoDoctor(pnlDoctores);
         add(ejemplo);
+        //----------FIN DE PLACEHOLDER----------
+
 
         //----------LÓGICA AQUÍ----------
-        //cambiar este int por el array.length del control con los dtos
-        /*int x = 3; //int de ejemplo, cambiar
-        for(int i = 0; i < x; i++){
-            //PnlElementoDoctor elementoDoctor = new PnlElementoDoctor(doctor);
-            //add(elementoDoctor)
+        /*
+
+        for(int i = 0; i < tratamientos.length; i++){
+            PnlElementoDoctor elementoDoctor = new PnlElementoDoctor(pnlDoctores, doctor);
+            add(elementoDoctor)
         }
+
          */
+        //----------FIN DE LÓGICA----------
+
 
         btnRegistrarDoctor.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                DlgRegistrarDoctor registrar = new DlgRegistrarDoctor(null);
+                DlgRegistrarDoctor registrar = new DlgRegistrarDoctor(null, pnlDoctores);
                 registrar.setVisible(true);
             }
         });
@@ -86,6 +89,14 @@ public class PnlDoctores extends JPanel {
 
         setOpaque(false);
         setVisible(true);
+    }
+
+    public void refresh() {
+
+        System.out.println("refresh pnlDoctores");
+
+        revalidate();
+        repaint();
     }
 
 }

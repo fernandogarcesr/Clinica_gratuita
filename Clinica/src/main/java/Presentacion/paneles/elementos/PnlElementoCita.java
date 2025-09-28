@@ -1,4 +1,4 @@
-package Presentacion.paneles.elementos;
+package Clinica.src.main.java.Presentacion.paneles.elementos;
 
 import Presentacion.dialogs.detalles.DlgDetallesCita;
 import Presentacion.paneles.PnlCitas;
@@ -12,18 +12,21 @@ import java.awt.event.MouseEvent;
 
 public class PnlElementoCita extends JPanel {
 
-    //----------LÓGICA AQUÍ-----------
-    //Atributos de la cita - convertir a getters del DTO
-    //Cita cita;
+
+    //----------PLACEHOLDER HARCODEADO-----------
+    //Dejar valores sin asignar como declaración simple
+
     String nombreMedico = "Dr. Pancracio López";
     String nombrePaciente = "Fulanito D´tal";
     String fechaHora = "dd/mm/aaaa 00:00hrs";
     String estado = "Programada";
+    //----------FIN DEL PLACEHOLDER-----------
 
 
     Style style = new Style();
     Dimension dimension = new Dimension(Style.frameX - 20, 70);
     PnlCitas pnlCitas;
+    PnlElementoCita pnlElementoCita;
 
     boolean testeoColor = false;
 
@@ -34,17 +37,34 @@ public class PnlElementoCita extends JPanel {
     CustomLabel lblEstado = new CustomLabel(" " + estado + " ", 18);
 
 
-    //----------LÓGICA AQUÍ-----------
-    //Agregar de parámetro un objeto DTO cita
-    public PnlElementoCita(PnlCitas pnlCitas) {
+    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
+    //Agregar de parámetro un objeto tipo cita
 
-        pnlCitas = this.pnlCitas;
+    //public PnlElementoCita(PnlCitas pnlCitas, Cita cita) {
+    public PnlElementoCita(PnlCitas pnlCitas) {
 
         //Establecimiento de panel
         setMaximumSize(dimension);
         setMinimumSize(dimension);
         setPreferredSize(dimension);
         setBackground(style.grisBase);
+
+        this.pnlCitas = pnlCitas;
+        pnlElementoCita = this;
+
+
+        //----------LÓGICA AQUÍ----------
+        /*
+        //Asignación de variables
+
+        nombreMedico = cita.getNombreMedico();
+        nombre = cita.getNombrePaciente();
+        fechaHora = cita.getFechaHora();
+        estado = cita.getEstado();
+
+        */
+        //----------FIN DE LÓGICA----------
+
 
         //Acciones del panel
         addMouseListener(new MouseAdapter() {
@@ -62,9 +82,22 @@ public class PnlElementoCita extends JPanel {
             //Mostrar info al ser clickeado
             @Override
             public void mouseClicked(MouseEvent e) {
-                //meter la cita de este panel como argumento pal dialog
-                DlgDetallesCita detalles = new DlgDetallesCita(null);
+
+                //----------PLACEHOLDER HARCODEADO-----------
+                DlgDetallesCita detalles = new DlgDetallesCita(null, pnlCitas, pnlElementoCita);
                 detalles.setVisible(true);
+                //----------FIN DEL PLACEHOLDER-----------
+
+
+                //----------LÓGICA AQUÍ----------
+                /*
+
+                DlgDetallesCita detalles = new DlgDetallesCita(null, pnlCitas,  pnlElementoCita, cita);
+                detalles.setVisible(true);
+
+                */
+                //----------FIN DE LÓGICA----------
+
             }
         });
 
@@ -74,6 +107,17 @@ public class PnlElementoCita extends JPanel {
         add(lblEstado);
 
 
+    }
+
+    public void refresh() {
+        /*
+        DlgRegistrarCita registrar = new DlgRegistrarCita(null);
+        registrar.setVisible(true);*/
+
+        System.out.println("refresh pnlElementoCitas");
+
+        revalidate();
+        repaint();
     }
 
 

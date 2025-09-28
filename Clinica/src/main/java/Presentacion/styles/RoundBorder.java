@@ -1,4 +1,4 @@
-package Presentacion.styles;
+package Clinica.src.main.java.Presentacion.styles;
 
 import javax.swing.border.LineBorder;
 import java.awt.*;

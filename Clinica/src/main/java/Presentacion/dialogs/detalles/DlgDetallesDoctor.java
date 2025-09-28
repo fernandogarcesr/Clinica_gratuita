@@ -1,6 +1,8 @@
-package Presentacion.dialogs.detalles;
+package Clinica.src.main.java.Presentacion.dialogs.detalles;
 
-import Presentacion.dialogs.registro.DlgRegistrarDoctor;
+import Presentacion.dialogs.edicion.DlgEditarDoctor;
+import Presentacion.paneles.PnlDoctores;
+import Presentacion.paneles.elementos.PnlElementoDoctor;
 import Presentacion.styles.*;
 
 import javax.swing.*;
@@ -10,20 +12,24 @@ import java.awt.event.MouseEvent;
 
 public class DlgDetallesDoctor extends JDialog {
 
-    //------------LÓGICA AQUÍ-----------
-    //cambiar por getters del DTO
-    String nombreDoctor = "Pancracio Lopez";
+    //----------PLACEHOLDER HARCODEADO-----------
+    //Dejar valores sin asignar como declaración simple
+
+    String nombre = "Pancracio Lopez";
     String especialidad = "Cardiólogo";
     String correo = "ola@ola.com";
     String telefono = "1234567890";
+    //----------FIN DEL PLACEHOLDER-----------
 
 
     boolean testeoColor = false;
 
     Style style = new Style();
+    PnlDoctores pnlDoctores;
+    PnlElementoDoctor pnlElementoDoctor;
 
     //Labels
-    CustomLabel lblTitulo = new CustomLabel("Dr. " + nombreDoctor, 32);
+    CustomLabel lblTitulo = new CustomLabel("Dr. " + nombre, 32);
 
     CustomLabel lblColEspecialidad = new CustomLabel("        Especialidad      ", 24);
     CustomLabel lblEspecialidad = new CustomLabel(especialidad, style.letraSize);
@@ -36,6 +42,11 @@ public class DlgDetallesDoctor extends JDialog {
 
     CustomLabel lblCitasAgendadas = new CustomLabel("        Citas agendadas      ", 24);
 
+    CustomLabel lblColPaciente = new CustomLabel("Paciente", style.letraSize);
+    CustomLabel lblColFechaHora = new CustomLabel("Fecha y hora", style.letraSize);
+    CustomLabel lblColEstado = new CustomLabel("Estado", style.letraSize);
+    CustomLabel lblColCita = new CustomLabel("ID", style.letraSize);
+
 
     //Boton
     CustomButton btnEditarDoctor = new CustomButton("Editar información");
@@ -45,6 +56,7 @@ public class DlgDetallesDoctor extends JDialog {
     ContainerPanel contenido = new ContainerPanel(style.dialogX, style.dialogY, style.grisDialog, true);
     ContainerPanel columnas = new ContainerPanel(style.dialogX, 50, Color.RED, testeoColor);
     ContainerPanel informacion = new ContainerPanel(style.dialogX, 50, Color.ORANGE, testeoColor);
+    ContainerPanel colCitas = new ContainerPanel(style.dialogX, 50, Color.RED, testeoColor);
 
     //Espacios
     Espaciador espaciadorv1 = new Espaciador(10, 50);
@@ -52,19 +64,33 @@ public class DlgDetallesDoctor extends JDialog {
     Espaciador espaciadorv3 = new Espaciador(10, 50);
     Espaciador espaciadorv4 = new Espaciador(10, 50);
 
-    Espaciador espaciadorh1 = new Espaciador(10, 10);
 
+    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
+    //Agregar de parámetro un objeto tipo cita
 
-
-    public DlgDetallesDoctor(Frame parent) {
+    //public DlgDetallesDoctor(Frame parent, PnlDoctores pnlDoctores, PnlElementoDoctor pnlElementoDoctor, Doctor doctor) {
+    public DlgDetallesDoctor(Frame parent, PnlDoctores pnlDoctores, PnlElementoDoctor pnlElementoDoctor) {
 
         //Setup del dialog
-        //super(parent, "Detalles de cita", true);
-        super(parent, "Detalles de cita");
+        super(parent, "Detalles del doctor");
         setSize(style.dimensionDialog);
         setLocationRelativeTo(parent);
         setBackground(style.grisDialog);
-        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        this.pnlDoctores = pnlDoctores;
+        this.pnlElementoDoctor = pnlElementoDoctor;
+
+        //----------LÓGICA AQUÍ----------
+        /*
+        //Asignación de variables
+
+        nombre = doctor.getNombre();
+        especialidad = doctor.getEspecialidad();
+        correo = doctor.getCorreo();
+        telefono = doctor.getTelefono();
+
+        */
+        //----------FIN DE LÓGICA----------
 
 
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
@@ -92,7 +118,39 @@ public class DlgDetallesDoctor extends JDialog {
 
         //Citas agendadas
         contenido.add(lblCitasAgendadas);
-        //copiar lógica de mostracion de citas
+        colCitas.add(lblColPaciente);
+        colCitas.add(lblColFechaHora);
+        colCitas.add(lblColEstado);
+        colCitas.add(lblColCita);
+
+        //----------LÓGICA AQUÍ----------
+        /*
+        //Listar citas
+        //Nota: no estoy seguro si esto vaya a jalar
+
+        //(Recorre todas las citas que tenga este doctor)
+        for(int i = 0; i < doctor.citas.length; i++) {
+
+            ContainerPanel cita = new ContainerPanel(style.dialogX, 50, Color.RED, testeoColor);
+
+            CustomLabel lblPaciente = new CustomLabel(doctor.citas[i].getNombrePaciente(), style.letraSize);
+            CustomLabel lblFechaHora = new CustomLabel(doctor.citas[i].getFechaHora(), style.letraSize);
+            CustomLabel lblEstado = new CustomLabel(doctor.citas[i].getEstado(), style.letraSize);
+            CustomLabel lblCita = new CustomLabel(doctor.citas[i].getNombreCita(), style.letraSize);
+
+            cita.add(lblPaciente);
+            cita.add(lblFechaHora);
+            cita.add(lblEstado);
+            cita.add(lblCita);
+
+            add(cita)
+
+        }
+
+        */
+        //----------FIN DE LÓGICA----------
+
+
 
         contenido.add(espaciadorv4);
 
@@ -120,35 +178,41 @@ public class DlgDetallesDoctor extends JDialog {
 
         add(contenido);
 
-        //setVisible(true);
-
     }
 
 
+    //----------LÓGICA AQUÍ----------
+
     public void eliminarDoctor() {
 
-        //----------LÓGICA AQUÍ----------
         //hacer cosa mágica para que se elimine
-        System.out.println("Haz de cuenta que se eliminó el dr." + nombreDoctor);
+        System.out.println("Haz de cuenta que se eliminó el dr." + nombre);
 
-        //validar que se haya eliminado
+        pnlDoctores.refresh();
+        pnlElementoDoctor.refresh();
         this.dispose();
 
     }
 
     public void editarDoctor() {
 
-        //----------LÓGICA AQUÍ----------
-        //meter de argumento al dr
-
         System.out.println("Desplegar dialog de edición");
 
-        //se utiliza el mismo dialog que al registrar, pero un constructor alternativo con el dr como argumento
-        DlgRegistrarDoctor edicion = new DlgRegistrarDoctor(null);
+        //----------PLACEHOLDER HARCODEADO-----------
+        DlgEditarDoctor edicion = new DlgEditarDoctor(null, pnlDoctores, pnlElementoDoctor);
         edicion.setVisible(true);
+        //----------FIN DEL PLACEHOLDER-----------
+
+        /*
+        DlgEditarDoctor edicion = new DlgEditarDoctor(null,pnlDoctores, pnlElementoDoctor, doctor);
+        edicion.setVisible(true);
+         */
+
 
         this.dispose();
 
     }
+
+    //----------FIN DE LÓGICA----------
 
 }

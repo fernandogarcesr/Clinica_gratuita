@@ -1,8 +1,9 @@
-package Presentacion.styles;
+package Clinica.src.main.java.Presentacion.styles;
 
 import java.awt.geom.Line2D;
 
 public class LineaAngular {
+
     int xInicio;
     int yInicio;
     double anguloGrados;

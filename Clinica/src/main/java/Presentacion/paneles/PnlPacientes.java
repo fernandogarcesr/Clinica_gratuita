@@ -1,8 +1,6 @@
-package Presentacion.paneles;
+package Clinica.src.main.java.Presentacion.paneles;
 
-import Presentacion.dialogs.registro.DlgRegistrarDoctor;
 import Presentacion.dialogs.registro.DlgRegistrarPaciente;
-import Presentacion.paneles.elementos.PnlElementoDoctor;
 import Presentacion.paneles.elementos.PnlElementoPaciente;
 import Presentacion.styles.*;
 
@@ -15,6 +13,7 @@ public class PnlPacientes extends JPanel{
 
     Style style = new Style();
     boolean testeoColor = false;
+    PnlPacientes pnlPacientes = this;
 
     //Título
     ContainerPanel titulo = new ContainerPanel(style.frameX, 40, Color.RED, testeoColor);
@@ -61,24 +60,28 @@ public class PnlPacientes extends JPanel{
         add(columnas);
 
 
-        //Campo de pruebas
-        PnlElementoPaciente ejemplo = new PnlElementoPaciente();
+        //----------PLACEHOLDER HARDCODEADO----------
+        PnlElementoPaciente ejemplo = new PnlElementoPaciente(pnlPacientes);
         add(ejemplo);
+        //----------FIN DE PLACEHOLDER----------
 
-        //add containerpanel con un for que liste los pacientes
+
         //----------LÓGICA AQUÍ----------
-        //cambiar este int por el array.length del control con los dtos
-        /*int x = 3; //int de ejemplo, cambiar
-        for(int i = 0; i < x; i++){
-            //PnlElementoPaciente elementoPaciente = new PnlElementoPaciente(paciente);
-            //add(elementoPaciente)
+        /*
+
+        for(int i = 0; i < pacientes.length; i++){
+            PnlElementoPaciente elementoPaciente = new PnlElementoPaciente(pnlPacientes, paciente);
+            add(elementoPaciente)
         }
+
          */
+        //----------FIN DE LÓGICA----------
+
 
         btnRegistrarPaciente.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                DlgRegistrarPaciente registrar = new DlgRegistrarPaciente(null);
+                DlgRegistrarPaciente registrar = new DlgRegistrarPaciente(null, pnlPacientes);
                 registrar.setVisible(true);
             }
         });
@@ -86,5 +89,13 @@ public class PnlPacientes extends JPanel{
 
         setOpaque(false);
         setVisible(true);
+    }
+
+    public void refresh() {
+
+        System.out.println("refresh pnlPacientes");
+
+        revalidate();
+        repaint();
     }
 }

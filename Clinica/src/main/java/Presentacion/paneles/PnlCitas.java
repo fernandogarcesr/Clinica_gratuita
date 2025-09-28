@@ -1,18 +1,19 @@
-package Presentacion.paneles;
+package Clinica.src.main.java.Presentacion.paneles;
+
+import Presentacion.dialogs.registro.DlgRegistrarCita;
+import Presentacion.paneles.elementos.PnlElementoCita;
+import Presentacion.styles.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import Presentacion.dialogs.registro.DlgRegistrarCita;
-import Presentacion.paneles.elementos.PnlElementoCita;
-import Presentacion.styles.*;
-
 public class PnlCitas extends JPanel {
 
     Style style = new Style();
     boolean testeoColor = false;
+    PnlCitas pnlCitas = this;
 
     //Título
     ContainerPanel titulo = new ContainerPanel(style.frameX, 40, Color.RED, testeoColor);
@@ -31,16 +32,18 @@ public class PnlCitas extends JPanel {
     //Espaciadores
     Espaciador espaciov1 = new Espaciador(10, 30);
 
-    int espacioX = 100;
     Espaciador espacioh1 = new Espaciador(100, 10);
     Espaciador espacioh2 = new Espaciador(150, 10);
     Espaciador espacioh3 = new Espaciador(80, 10);
     Espaciador espacioh4 = new Espaciador(80, 10);
 
+    public boolean x = false;
 
     public PnlCitas() {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        //pnlCitas = this;
+
 
         add(espaciov1);
 
@@ -58,28 +61,35 @@ public class PnlCitas extends JPanel {
         columnas.add(espacioh4);
         columnas.add(lblEstado);
 
-
         add(columnas);
 
 
-        //Campo de pruebas
+        //----------PLACEHOLDER HARDCODEADO----------
         PnlElementoCita ejemplo = new PnlElementoCita(this);
         add(ejemplo);
+        //----------FIN DE PLACEHOLDER----------
+
 
         //----------LÓGICA AQUÍ----------
-        //cambiar este int por el array.length del control con los dtos
-        /*int x = 3; //int de ejemplo, cambiar
-        for(int i = 0; i < x; i++){
-            //PnlElementoCita elementoCita = new PnlElementoCita(cita);
-            //add(elementoCita)
+        /*
+
+        for(int i = 0; i < citas.length; i++){
+            PnlElementoCita elementoCita = new PnlElementoCita(citas);
+            add(elementoCita)
         }
-         */
+
+        */
+        //----------FIN DE LÓGICA----------
+
 
         btnAgendarCita.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                DlgRegistrarCita registrar = new DlgRegistrarCita(null);
+
+                DlgRegistrarCita registrar = new DlgRegistrarCita(null, pnlCitas);
                 registrar.setVisible(true);
+
+
             }
         });
         add(btnAgendarCita);
@@ -87,5 +97,16 @@ public class PnlCitas extends JPanel {
         setOpaque(testeoColor);
         setVisible(true);
 
+    }
+
+    public void refresh() {
+        /*
+        DlgRegistrarCita registrar = new DlgRegistrarCita(null);
+        registrar.setVisible(true);*/
+
+        System.out.println("refresh pnlCitas");
+
+        revalidate();
+        repaint();
     }
 }

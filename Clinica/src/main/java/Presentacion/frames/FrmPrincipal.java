@@ -1,19 +1,14 @@
-package Presentacion.frames;
+package Clinica.src.main.java.Presentacion.frames;
+
+import Presentacion.paneles.*;
+import Presentacion.styles.*;
 
 import javax.swing.*;
-import java.awt.*;
-import Presentacion.styles.*;
-import Presentacion.paneles.*;
 
 public class FrmPrincipal extends JFrame {
 
-    //agregar menú principal como panel interno
-
     Style style = new Style();
     private PnlMenu pnlMenu;
-    //private JPanel panelSur;
-
-
 
     public FrmPrincipal( ) {
 
@@ -32,7 +27,4 @@ public class FrmPrincipal extends JFrame {
         setVisible(true);
     }
 
-    public void volverInicio() {
-        //showPanelContenedorNuevo(mainFramePanel);
-    }
 }

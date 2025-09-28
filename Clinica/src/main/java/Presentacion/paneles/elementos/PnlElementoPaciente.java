@@ -1,6 +1,7 @@
-package Presentacion.paneles.elementos;
+package Clinica.src.main.java.Presentacion.paneles.elementos;
 
 import Presentacion.dialogs.detalles.DlgDetallesPaciente;
+import Presentacion.paneles.PnlPacientes;
 import Presentacion.styles.CustomLabel;
 import Presentacion.styles.Espaciador;
 import Presentacion.styles.Style;
@@ -12,30 +13,35 @@ import java.awt.event.MouseEvent;
 
 public class PnlElementoPaciente extends JPanel {
 
-    //----------LÓGICA AQUÍ----------
-    //Atributos del dr - convertir a getters del dTO
-    String nombrePaciente = "Fulanito D´tal";
+    //----------PLACEHOLDER HARCODEADO-----------
+    //Dejar valores sin asignar como declaración simple
+
+    String nombre = "Fulanito D´tal";
     String sexo = "siempre";
     String edad = "23";
     String telefono = "1234-567-890";
+    //----------FIN DEL PLACEHOLDER-----------
 
 
     Style style = new Style();
     Dimension dimension = new Dimension(Style.frameX - 20, 70);
+    PnlPacientes pnlPacientes;
+    PnlElementoPaciente pnlElementoPaciente = this;
 
     boolean testeoColor = false;
 
-    CustomLabel lblNombre = new CustomLabel("  " + nombrePaciente, 18);
+    CustomLabel lblNombre = new CustomLabel("  " + nombre, 18);
     CustomLabel lblSexo = new CustomLabel("   " + sexo, 18);
     CustomLabel lblEdad = new CustomLabel("   " + edad + "     ", 18);
     CustomLabel lblTelefono = new CustomLabel("   " + telefono + "     ", 18);
     Espaciador espacioh1 = new Espaciador(10, 10);
 
-    //----------LÓGICA AQUÍ-----------
-    //Agregar de parámetro un objeto DTO cita
-    public PnlElementoPaciente() {
 
-        //settear los atributos del album como atributos de este panel
+    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
+    //Agregar de parámetro un objeto tipo paciente
+
+    //public PnlElementoPaciente(Paciente paciente) {
+    public PnlElementoPaciente(PnlPacientes pnlPacientes) {
 
         //Establecimiento de panel
         setMaximumSize(dimension);
@@ -43,6 +49,22 @@ public class PnlElementoPaciente extends JPanel {
         setPreferredSize(dimension);
         setBackground(style.grisBase);
         setLayout(new GridLayout(1, 6));
+
+        this.pnlPacientes = pnlPacientes;
+
+
+        //----------LÓGICA AQUÍ----------
+        /*
+        //Asignación de variables
+
+        nombre = paciente.getNombre();
+        sexo = paciente.getSexo();
+        edad = paciente.getEdad();
+        telefono = paciente.getTelefono();
+
+        */
+        //----------FIN DE LÓGICA----------
+
 
         //Acciones del panel
         addMouseListener(new MouseAdapter() {
@@ -60,9 +82,22 @@ public class PnlElementoPaciente extends JPanel {
             //Mostrar info al ser clickeado
             @Override
             public void mouseClicked(MouseEvent e) {
-                //meter al paciente de este panel como argumento pal dialog
-                DlgDetallesPaciente detalles = new DlgDetallesPaciente(null);
+
+                //----------PLACEHOLDER HARCODEADO-----------
+                DlgDetallesPaciente detalles = new DlgDetallesPaciente(null, pnlPacientes, pnlElementoPaciente);
                 detalles.setVisible(true);
+                //----------FIN DEL PLACEHOLDER-----------
+
+
+                //----------LÓGICA AQUÍ----------
+                /*
+
+                DlgDetallesPaciente detalles = new DlgDetallesPaciente(null, pnlPacientes, pnlElementoPaciente, paciente);
+                detalles.setVisible(true);
+
+                */
+                //----------FIN DE LÓGICA----------
+
             }
         });
 
@@ -72,5 +107,13 @@ public class PnlElementoPaciente extends JPanel {
         add(lblTelefono);
         //add(espacioh1);
 
+    }
+
+    public void refresh() {
+
+        System.out.println("refresh pnlElementoPaciente");
+
+        revalidate();
+        repaint();
     }
 }

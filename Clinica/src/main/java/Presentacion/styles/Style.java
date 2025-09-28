@@ -1,4 +1,4 @@
-package Presentacion.styles;
+package Clinica.src.main.java.Presentacion.styles;
 
 import java.awt.*;
 

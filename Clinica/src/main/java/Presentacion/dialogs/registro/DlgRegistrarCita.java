@@ -1,5 +1,6 @@
-package Presentacion.dialogs.registro;
+package Clinica.src.main.java.Presentacion.dialogs.registro;
 
+import Presentacion.paneles.PnlCitas;
 import Presentacion.styles.*;
 
 import javax.swing.*;
@@ -12,6 +13,7 @@ public class DlgRegistrarCita extends JDialog {
     boolean testeoColor = false;
     Style style = new Style();
     String doctor, dia, mes, anio, hora, paciente, motivo;
+    PnlCitas pnlCitas;
 
     //Labels
     CustomLabel lblTitulo = new CustomLabel("Agendar nueva cita", 32);
@@ -31,6 +33,7 @@ public class DlgRegistrarCita extends JDialog {
     String[] fechaAnios = {"2025", "2026"};
     String[] horas = {"8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"};
     String[] pacientes = {"Fulanito D´tal", "Juan Pérez", "Hermenegildo García"};
+    //----------FIN DE LÓGICA----------
 
 
     //Textfields y comboboxes
@@ -49,27 +52,21 @@ public class DlgRegistrarCita extends JDialog {
 
     //contenedores
     ContainerPanel contenido = new ContainerPanel(style.dialogX, style.dialogY, style.grisDialog, true);
-    ContainerPanel columnas = new ContainerPanel(style.dialogX, 50, Color.RED, testeoColor);
-    ContainerPanel informacion = new ContainerPanel(style.dialogX, 50, Color.ORANGE, testeoColor);
 
     //Espacios
     Espaciador espaciadorv1 = new Espaciador(10, 50);
     Espaciador espaciadorv2 = new Espaciador(10, 50);
-    Espaciador espaciadorv3 = new Espaciador(10, 50);
-    Espaciador espaciadorv4 = new Espaciador(10, 50);
-
     Espaciador espaciadorh1 = new Espaciador(10, 10);
 
 
-    public DlgRegistrarCita(Frame parent) {
+    public DlgRegistrarCita(Frame parent, PnlCitas pnlCitas) {
 
         //Setup del dialog
-        //super(parent, "Detalles de cita", true);
         super(parent, "Agendar cita");
         setSize(style.dimensionDialog);
         setLocationRelativeTo(parent);
         setBackground(style.grisDialog);
-        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.pnlCitas = pnlCitas;
 
 
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
@@ -115,9 +112,10 @@ public class DlgRegistrarCita extends JDialog {
     }
 
 
+    //----------LÓGICA AQUÍ----------
+
     public void agendarCita() {
 
-        //----------LÓGICA AQUÍ----------
         //hacer cosa mágica para que se agende la cita actual
         //extracción de la info a strings (dr y paciente deben ser objetos en vez de strings)
         doctor = cboxDoctores.getSelectedItem().toString();
@@ -130,5 +128,15 @@ public class DlgRegistrarCita extends JDialog {
 
         System.out.println("Haz de cuenta que se agendó la cita con los datos: " + doctor + dia + mes + anio + hora + paciente + motivo );
 
+        //Meter la info a la BD
+        //Crear y agregar nuevo elemento a la lista ???
+
+        pnlCitas.refresh();
+
+        this.dispose();
+
     }
+
+    //----------FIN DE LÓGICA----------
+
 }

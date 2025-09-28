@@ -1,6 +1,8 @@
-package Presentacion.dialogs.detalles;
+package Clinica.src.main.java.Presentacion.dialogs.detalles;
 
-import Presentacion.dialogs.registro.DlgRegistrarPaciente;
+import Presentacion.dialogs.edicion.DlgEditarPaciente;
+import Presentacion.paneles.PnlPacientes;
+import Presentacion.paneles.elementos.PnlElementoPaciente;
 import Presentacion.styles.*;
 
 import javax.swing.*;
@@ -10,22 +12,25 @@ import java.awt.event.MouseEvent;
 
 public class DlgDetallesPaciente extends JDialog {
 
-    //------------LÓGICA AQUÍ-----------
-    //cambiar por getters del DTO
-    String nombrePaciente = "Fulanito D´tal";
+    //----------PLACEHOLDER HARCODEADO-----------
+    //Dejar valores sin asignar como declaración simple
+
+    String nombre = "Fulanito D´tal";
     String fechaN = "dd/mm/aaaa";
     String sexo = "Masculino";
     String direccion = "Calle de las sirenas, Luna";
     String correo = "ola@ola.com";
     String telefono = "1234567890";
+    //----------FIN DEL PLACEHOLDER-----------
 
 
     boolean testeoColor = false;
-
     Style style = new Style();
+    PnlPacientes pnlPacientes;
+    PnlElementoPaciente pnlElementoPaciente;
 
     //Labels
-    CustomLabel lblTitulo = new CustomLabel(nombrePaciente, 32);
+    CustomLabel lblTitulo = new CustomLabel(nombre, 32);
 
     CustomLabel lblColSexo = new CustomLabel("        Sexo      ", 24);
     CustomLabel lblSexo = new CustomLabel(sexo, style.letraSize);
@@ -60,18 +65,33 @@ public class DlgDetallesPaciente extends JDialog {
     Espaciador espaciadorv3 = new Espaciador(10, 50);
     Espaciador espaciadorv4 = new Espaciador(10, 50);
 
-    Espaciador espaciadorh1 = new Espaciador(10, 10);
 
+    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
+    //Agregar de parámetro un objeto tipo paciente
 
-    public DlgDetallesPaciente(Frame parent) {
+    //public DlgDetallesPaciente(Frame parent, PnlPacientes pnlPacientes, PnlElementoPaciente pnlElementoPaciente, Paciente paciente) {
+    public DlgDetallesPaciente(Frame parent, PnlPacientes pnlPacientes, PnlElementoPaciente pnlElementoPaciente) {
 
         //Setup del dialog
-        //super(parent, "Detalles de cita", true);
-        super(parent, "Detalles de cita");
+        super(parent, "Detalles de paciente");
         setSize(style.dimensionDialog);
         setLocationRelativeTo(parent);
         setBackground(style.grisDialog);
-        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+
+        //----------LÓGICA AQUÍ----------
+        /*
+        //Asignación de variables
+
+        nombre = paciente.getNombre();
+        fechaN = paciente.getFechaNacimiento();
+        sexo = paciente.getSexo();
+        direccion = paciente.getDirección;
+        correo = paciente.getCorreo();
+        telefono = paciente.getTelefono();
+
+        */
+        //----------FIN DE LÓGICA----------
 
 
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
@@ -106,8 +126,36 @@ public class DlgDetallesPaciente extends JDialog {
 
         contenido.add(espaciadorv4);
 
+
         //Tratamientos
-        //insertar cosa de los tratamientos
+
+        //----------LÓGICA AQUÍ----------
+        /*
+        //Listar citas
+        //Nota: no estoy seguro si esto vaya a jalar
+
+        //(Recorre todas las citas que tenga este paciente)
+        for(int i = 0; i < paciente.citas.length; i++) {
+
+            ContainerPanel cita = new ContainerPanel(style.dialogX, 50, Color.RED, testeoColor);
+
+            CustomLabel lblDoctor = new CustomLabel(paciente.citas[i].getNombrePaciente(), style.letraSize);
+            CustomLabel lblFechaHora = new CustomLabel(paciente.citas[i].getFechaHora(), style.letraSize);
+            CustomLabel lblEstado = new CustomLabel(paciente.citas[i].getEstado(), style.letraSize);
+            CustomLabel lblCita = new CustomLabel(paciente.citas[i].getNombreCita(), style.letraSize);
+
+            cita.add(lblDoctor);
+            cita.add(lblFechaHora);
+            cita.add(lblEstado);
+            cita.add(lblCita);
+
+            add(cita)
+
+        }
+
+        */
+        //----------FIN DE LÓGICA----------
+
 
         //Botones
         btnEditarPaciente.addMouseListener(new MouseAdapter() {
@@ -130,35 +178,35 @@ public class DlgDetallesPaciente extends JDialog {
 
         add(contenido);
 
-        //setVisible(true);
-
     }
 
+    //----------LÓGICA AQUÍ----------
 
     public void eliminarPaciente() {
 
-        //----------LÓGICA AQUÍ----------
         //hacer cosa mágica para que se elimine
-        System.out.println("Haz de cuenta que se eliminó el paciente " + nombrePaciente);
+        System.out.println("Haz de cuenta que se eliminó el paciente " + nombre);
 
-        //validar que se haya eliminado
+        pnlPacientes.refresh();
+        pnlElementoPaciente.refresh();
         this.dispose();
 
     }
 
     public void editarPaciente() {
 
-        //----------LÓGICA AQUÍ----------
-        //meter de argumento al paciente
-
         System.out.println("Desplegar dialog de edición");
 
-        //se utiliza el mismo dialog que al registrar, pero un constructor alternativo con el paciente como argumento
-        DlgRegistrarPaciente edicion = new DlgRegistrarPaciente(null);
+        DlgEditarPaciente edicion = new DlgEditarPaciente(null, pnlPacientes, pnlElementoPaciente);
         edicion.setVisible(true);
 
+        pnlPacientes.refresh();
+        pnlElementoPaciente.refresh();
         this.dispose();
 
     }
+
+    //----------FIN DE LÓGICA----------
+
 
 }

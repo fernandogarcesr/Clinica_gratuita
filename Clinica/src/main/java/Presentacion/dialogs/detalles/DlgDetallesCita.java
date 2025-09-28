@@ -1,5 +1,7 @@
-package Presentacion.dialogs.detalles;
+package Clinica.src.main.java.Presentacion.dialogs.detalles;
 
+import Presentacion.paneles.PnlCitas;
+import Presentacion.paneles.elementos.PnlElementoCita;
 import Presentacion.styles.*;
 
 import javax.swing.*;
@@ -9,25 +11,23 @@ import java.awt.event.MouseEvent;
 
 public class DlgDetallesCita extends JDialog {
 
-    //WIP
 
+    //----------PLACEHOLDER HARCODEADO-----------
+    //Dejar valores sin asignar como declaración simple
 
-    //------------LÓGICA AQUÍ-----------
-    //cambiar por getters del DTO
     String nombreCita = "C-002";
     String nombreDoctor = "Dr.Pancracio Lopez";
     String nombrePaciente = "Fulanito D´tal";
     String fechaHora = "dd/mm/aaaa 00:00hrs";
     String estado = "En curso";
     String motivo = "lele pancha";
-
-    //buscar forma de
+    //----------FIN DEL PLACEHOLDER-----------
 
 
     boolean testeoColor = false;
-
+    PnlCitas pnlCitas;
+    PnlElementoCita pnlElementoCita;
     Style style = new Style();
-    //int dlgX = 500, dlgY = 600;
 
     //Labels
     CustomLabel lblTitulo = new CustomLabel("Cita " + nombreCita, 32);
@@ -49,12 +49,16 @@ public class DlgDetallesCita extends JDialog {
 
 
     //Boton
-    CustomButton btnEliminarCita = new CustomButton("Eliminar cita");
+    CustomButton btnCancelarCita = new CustomButton("Marcar como cancelada", 1, 200, 30);
+    CustomButton btnAtenderCita = new CustomButton("Marcar como en curso", 1, 200, 30);
+    CustomButton btnCompletarCita = new CustomButton("Marcar como completada", 1, 200, 30);
+
 
     //contenedores
     ContainerPanel contenido = new ContainerPanel(style.dialogX, style.dialogY, style.grisDialog, true);
     ContainerPanel columnas = new ContainerPanel(style.dialogX, 50, Color.RED, testeoColor);
     ContainerPanel informacion = new ContainerPanel(style.dialogX, 50, Color.ORANGE, testeoColor);
+    ContainerPanel botones = new ContainerPanel(style.dialogX, 50, Color.PINK, testeoColor);
 
     //Espacios
     Espaciador espaciadorv1 = new Espaciador(10, 50);
@@ -65,16 +69,35 @@ public class DlgDetallesCita extends JDialog {
     Espaciador espaciadorh1 = new Espaciador(10, 10);
 
 
+    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
+    //Agregar de parámetro un objeto tipo cita
 
-    public DlgDetallesCita(Frame parent) {
+    //public DlgDetallesCita(Frame parent, PnlCitas pnlCitas, Cita cita) {
+    public DlgDetallesCita(Frame parent, PnlCitas pnlCitas, PnlElementoCita pnlElementoCita) {
 
         //Setup del dialog
-        //super(parent, "Detalles de cita", true);
         super(parent, "Detalles de cita");
         setSize(style.dimensionDialog);
         setLocationRelativeTo(parent);
         setBackground(style.grisDialog);
-        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        this.pnlCitas = pnlCitas;
+        this.pnlElementoCita = pnlElementoCita;
+
+
+        //----------LÓGICA AQUÍ----------
+        /*
+        //Asignación de variables
+
+        nombreCita = cita.getNombreCita();
+        nombre = cita.getNombreDoctor()";
+        nombre = cita.getNombrePaciente();;
+        cita = cita.getFechaHora();
+        estado = cita.getEstado();
+        descripcion = cita.getMotivo();
+
+        */
+        //----------FIN DE LÓGICA----------
 
 
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
@@ -105,34 +128,76 @@ public class DlgDetallesCita extends JDialog {
 
         contenido.add(espaciadorv4);
 
+        //-----Lógica???
         //Tratamientos
-        //insertar cosa de los tratamientos
+        //insertar cosa de los tratamientos derivados de esta cita
 
         //Botones
-        btnEliminarCita.addMouseListener(new MouseAdapter() {
+        btnCancelarCita.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                eliminarCita();
+                cancelarCita();
             }
         });
-        contenido.add(btnEliminarCita);
+        btnAtenderCita.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                atenderCita();
+            }
+        });
+        btnCompletarCita.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                completarCita();
+            }
+        });
 
+        botones.add(btnCancelarCita);
+        botones.add(btnAtenderCita);
+        botones.add(btnCompletarCita);
+        contenido.add(botones);
 
 
         add(contenido);
 
-        //setVisible(true);
-
     }
 
 
-    public void eliminarCita() {
+    //----------LÓGICA AQUÍ----------
 
-        //----------LÓGICA AQUÍ----------
+    public void cancelarCita() {
+
         //hacer cosa mágica para que se elimine la cita actual
-        System.out.println("Haz de cuenta que se eliminó la cita");
+        System.out.println("Haz de cuenta que se canceló la cita");
+
+        pnlCitas.refresh();
+        pnlElementoCita.refresh();
         this.dispose();
 
     }
+
+    public void atenderCita() {
+
+        //hacer cosa mágica para que se marque como en curso
+        System.out.println("Haz de cuenta que la cita ahora está en curso");
+
+        pnlCitas.refresh();
+        pnlElementoCita.refresh();
+        this.dispose();
+
+    }
+
+    public void completarCita() {
+
+        //hacer cosa mágica para marcar como completada la cita
+        System.out.println("Haz de cuenta que se completó la cita");
+
+        pnlCitas.refresh();
+        pnlElementoCita.refresh();
+        this.dispose();
+
+    }
+
+    //----------FIN DE LÓGICA----------
 
 }
