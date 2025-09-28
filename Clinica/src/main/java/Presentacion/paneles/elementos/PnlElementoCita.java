@@ -1,6 +1,6 @@
 package Presentacion.paneles.elementos;
 
-import Presentacion.dialogs.DlgDtallesCita;
+import Presentacion.dialogs.detalles.DlgDetallesCita;
 import Presentacion.paneles.PnlCitas;
 import Presentacion.styles.CustomLabel;
 import Presentacion.styles.Style;
@@ -63,7 +63,7 @@ public class PnlElementoCita extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //meter la cita de este panel como argumento pal dialog
-                DlgDtallesCita detalles = new DlgDtallesCita(null);
+                DlgDetallesCita detalles = new DlgDetallesCita(null);
                 detalles.setVisible(true);
             }
         });

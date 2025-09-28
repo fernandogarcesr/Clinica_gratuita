@@ -1,10 +1,14 @@
 package Presentacion.paneles;
 
+import Presentacion.dialogs.registro.DlgRegistrarCita;
+import Presentacion.dialogs.registro.DlgRegistrarTratamiento;
 import Presentacion.paneles.elementos.PnlElementoTratamiento;
 import Presentacion.styles.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PnlTratamientos extends JPanel {
 
@@ -68,6 +72,13 @@ public class PnlTratamientos extends JPanel {
         }
          */
 
+        btnRecetarTratamiento.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                DlgRegistrarTratamiento registrar = new DlgRegistrarTratamiento(null);
+                registrar.setVisible(true);
+            }
+        });
         add(btnRecetarTratamiento);
 
         setOpaque(false);

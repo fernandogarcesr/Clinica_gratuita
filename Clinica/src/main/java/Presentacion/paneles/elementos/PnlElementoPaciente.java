@@ -1,5 +1,6 @@
 package Presentacion.paneles.elementos;
 
+import Presentacion.dialogs.detalles.DlgDetallesPaciente;
 import Presentacion.styles.CustomLabel;
 import Presentacion.styles.Espaciador;
 import Presentacion.styles.Style;
@@ -60,8 +61,8 @@ public class PnlElementoPaciente extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //meter al paciente de este panel como argumento pal dialog
-                //DlgDetallesPaciente detalles = new DlgDetallesPaciente();
-                //detalles.setVisible(true);
+                DlgDetallesPaciente detalles = new DlgDetallesPaciente(null);
+                detalles.setVisible(true);
             }
         });
 

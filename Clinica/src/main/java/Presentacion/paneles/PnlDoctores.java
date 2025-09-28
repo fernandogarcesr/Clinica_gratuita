@@ -1,10 +1,14 @@
 package Presentacion.paneles;
 
+import Presentacion.dialogs.registro.DlgRegistrarDoctor;
+import Presentacion.dialogs.registro.DlgRegistrarTratamiento;
 import Presentacion.paneles.elementos.PnlElementoDoctor;
 import Presentacion.styles.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PnlDoctores extends JPanel {
 
@@ -71,6 +75,13 @@ public class PnlDoctores extends JPanel {
         }
          */
 
+        btnRegistrarDoctor.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                DlgRegistrarDoctor registrar = new DlgRegistrarDoctor(null);
+                registrar.setVisible(true);
+            }
+        });
         add(btnRegistrarDoctor);
 
         setOpaque(false);

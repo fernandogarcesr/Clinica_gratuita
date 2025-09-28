@@ -18,6 +18,7 @@ public class FrmPrincipal extends JFrame {
     public FrmPrincipal( ) {
 
         //Establecimiento del frame
+        super("Sistema clínica");
         setSize(style.frameX, style.frameY);
         getContentPane().setBackground(Style.grisBase);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

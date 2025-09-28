@@ -2,9 +2,11 @@ package Presentacion.paneles;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
+import Presentacion.dialogs.registro.DlgRegistrarCita;
 import Presentacion.paneles.elementos.PnlElementoCita;
-import Presentacion.paneles.elementos.PnlElementoTratamiento;
 import Presentacion.styles.*;
 
 public class PnlCitas extends JPanel {
@@ -59,6 +61,7 @@ public class PnlCitas extends JPanel {
 
         add(columnas);
 
+
         //Campo de pruebas
         PnlElementoCita ejemplo = new PnlElementoCita(this);
         add(ejemplo);
@@ -72,6 +75,13 @@ public class PnlCitas extends JPanel {
         }
          */
 
+        btnAgendarCita.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                DlgRegistrarCita registrar = new DlgRegistrarCita(null);
+                registrar.setVisible(true);
+            }
+        });
         add(btnAgendarCita);
 
         setOpaque(testeoColor);

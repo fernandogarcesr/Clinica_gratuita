@@ -9,6 +9,10 @@ public class Style {
     public static final int frameY = 720;
     public static final Dimension dimensionBase = new Dimension(frameX, frameY);
 
+    public static final int dialogX = frameX - 200;
+    public static final int dialogY = frameY - 112;
+    public static final Dimension dimensionDialog = new Dimension(dialogX, dialogY);
+
     //Colores
     public static final Color grisBase = new Color(50, 50, 50);
     public static final Color grisBaseHover = new Color(69, 69, 69);
@@ -19,7 +23,7 @@ public class Style {
 
     public static final Color hoverBlanco = new Color(236, 236, 236);
 
-    public static final Color grisDialog = new Color(213, 213, 213);
+    public static final Color grisDialog = new Color(50, 50, 50);
 
     //Fuentes
     public static final int letraSize = 18;
