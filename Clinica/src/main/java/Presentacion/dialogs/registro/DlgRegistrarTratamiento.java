@@ -1,5 +1,7 @@
-package Clinica.src.main.java.Presentacion.dialogs.registro;
+package Presentacion.dialogs.registro;
 
+import BO.TratamientoBO;
+import DTO.TratamientoDTO;
 import Presentacion.paneles.PnlTratamientos;
 import Presentacion.styles.*;
 
@@ -9,114 +11,79 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class DlgRegistrarTratamiento extends JDialog{
+private final TratamientoBO tratamientoBO;
+    private final PnlTratamientos pnlTratamientos;
 
-    boolean testeoColor = false;
-    Style style = new Style();
-    String cita, tratamiento, duracion, descripcion;
-    PnlTratamientos pnlTratamientos;
+    // UI
+    CustomLabel lblTitulo = new CustomLabel("Registrar tratamiento", 32);
+    CustomLabel lblDescripcion = new CustomLabel("Descripción", 24);
+    CustomLabel lblDuracion = new CustomLabel("Duración (días)", 24);
+    CustomLabel lblMedicamentos = new CustomLabel("Medicamentos", 24);
+    CustomLabel lblIdCita = new CustomLabel("ID de cita (num)", 24);
 
-    //Labels
-    CustomLabel lblTitulo = new CustomLabel("Recetar tratamiento", 32);
+    TxtFieldPh txtDescripcion = new TxtFieldPh("Descripción", true, 400, 40, 18);
+    TxtFieldPh txtDuracion = new TxtFieldPh("Duración (ej. 7)", true, 200, 40, 18);
+    TxtFieldPh txtMedicamentos = new TxtFieldPh("Medicamentos", true, 400, 40, 18);
+    TxtFieldPh txtIdCita = new TxtFieldPh("Id de cita (número)", true, 200, 40, 18);
 
-    CustomLabel lblCita = new CustomLabel("Cita correspondiente", 24);
-    CustomLabel lblTratamiento = new CustomLabel("Nombre del tratamiento", 24);
-    CustomLabel lblDuracion = new CustomLabel("Duración del tratamiento", 24);
-    CustomLabel lblDescripcion = new CustomLabel("Descripcion (opcional)", 24);
+    CustomButton btnGuardar = new CustomButton("Registrar");
 
+    ContainerPanel contenido = new ContainerPanel(new Style().dialogX, new Style().dialogY, new Style().grisDialog, true);
 
-    //----------LÓGICA AQUI----------
-    //Contenido del cbox de ejemplo: cambiar por array con la info correcta
-    String[] citas = {"C-001", "C-002", "C-003"};
-
-    //Textfields y comboboxes
-    CustomComboBox cboxCitas = new CustomComboBox(citas);
-
-    TxtFieldPh txtfldTratamiento = new TxtFieldPh("Tratamiento", true, 200, 40, 24);
-    TxtFieldPh txtfldDuracion = new TxtFieldPh("Duración", true, 200, 40, 24);
-    TxtFieldPh txtfldDescripcion = new TxtFieldPh("Descripción", true, 200, 40, 24);
-
-    //Botones
-    CustomButton btnGuardar = new CustomButton("Guardar");
-
-
-
-    //contenedores
-    ContainerPanel contenido = new ContainerPanel(style.dialogX, style.dialogY, style.grisDialog, true);
-    ContainerPanel columnas = new ContainerPanel(style.dialogX, 50, Color.RED, testeoColor);
-    ContainerPanel informacion = new ContainerPanel(style.dialogX, 50, Color.ORANGE, testeoColor);
-
-    //Espacios
-    Espaciador espaciadorv1 = new Espaciador(10, 50);
-    Espaciador espaciadorv2 = new Espaciador(10, 50);
-    Espaciador espaciadorv3 = new Espaciador(10, 50);
-    Espaciador espaciadorv4 = new Espaciador(10, 50);
-
-    Espaciador espaciadorh1 = new Espaciador(10, 10);
-
-
-    public DlgRegistrarTratamiento(Frame parent, PnlTratamientos pnlTratamientos) {
-
-        //Setup del dialog
-        super(parent, "Recetar tratamiento");
-        setSize(style.dimensionDialog);
-        setLocationRelativeTo(parent);
-        setBackground(style.grisDialog);
-
+        public DlgRegistrarTratamiento(Frame owner, PnlTratamientos pnlTratamientos, TratamientoBO tratamientoBO) {
+        super(owner, "Registrar tratamiento", true);
+        this.tratamientoBO = tratamientoBO;
         this.pnlTratamientos = pnlTratamientos;
+
+        inicializarUI();
+    }
+
+    private void inicializarUI() {
+        setSize(new Style().dimensionDialog);
+        setLocationRelativeTo(getOwner());
 
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
 
-        //Contenido
-        contenido.add(espaciadorv1);
         contenido.add(lblTitulo);
-        contenido.add(espaciadorv2);
-
-        contenido.add(lblCita);
-        contenido.add(cboxCitas);
-
-        contenido.add(lblTratamiento);
-        contenido.add(txtfldTratamiento);
-
-        contenido.add(lblDuracion);
-        contenido.add(txtfldDuracion);
-
         contenido.add(lblDescripcion);
-        contenido.add(txtfldDescripcion);
+        contenido.add(txtDescripcion);
+        contenido.add(lblDuracion);
+        contenido.add(txtDuracion);
+        contenido.add(lblMedicamentos);
+        contenido.add(txtMedicamentos);
+        contenido.add(lblIdCita);
+        contenido.add(txtIdCita);
 
-
-        //Botones
-        btnGuardar.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                guardarTratamiento();
-            }
-        });
+        btnGuardar.addActionListener(e -> guardar());
         contenido.add(btnGuardar);
 
-
         add(contenido);
-
     }
 
-    //----------LÓGICA AQUÍ----------
+    private void guardar() {
+        try {
+            String descripcion = txtDescripcion.getText().trim();
+            String duracion = txtDuracion.getText().trim();
+            String medicamentos = txtMedicamentos.getText().trim();
+            int idCita = Integer.parseInt(txtIdCita.getText().trim()); // si quieres select combos reemplazar
 
-    public void guardarTratamiento() {
+            TratamientoDTO dto = new TratamientoDTO();
+            dto.setDescripcion(descripcion);
+            dto.setDuracion(duracion);
+            dto.setMedicamentos(medicamentos);
+            dto.setIdCita(idCita);
 
-        //hacer cosa mágica para que se guarde el tratamiento
-        //extracción de la info a strings
-        cita = cboxCitas.getSelectedItem().toString();
-        tratamiento = txtfldTratamiento.getText();
-        duracion = txtfldDuracion.getText();
-        descripcion = txtfldDescripcion.getText();
-
-        System.out.println("Haz de cuenta que se guardó el tratamiento con los datos: " + cita + tratamiento + duracion + descripcion);
-
-        pnlTratamientos.refresh();
-        this.dispose();
-
+            tratamientoBO.registrarTratamiento(dto);
+            JOptionPane.showMessageDialog(this, "Tratamiento registrado correctamente");
+            if (pnlTratamientos != null) pnlTratamientos.refresh();
+            dispose();
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(this, "Id de cita inválido (debe ser número).");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al registrar: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
-
-    //----------FIN DE LÓGICA----------
 
 }
 

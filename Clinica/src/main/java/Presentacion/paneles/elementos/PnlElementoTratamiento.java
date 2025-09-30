@@ -1,5 +1,7 @@
-package Clinica.src.main.java.Presentacion.paneles.elementos;
+package Presentacion.paneles.elementos;
 
+import BO.TratamientoBO;
+import Dominios.TratamientoDominio;
 import Presentacion.dialogs.detalles.DlgDetallesTratamiento;
 import Presentacion.paneles.PnlTratamientos;
 import Presentacion.styles.CustomLabel;
@@ -11,103 +13,67 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class PnlElementoTratamiento extends JPanel {
+ private Style style = new Style();
+    private final PnlTratamientos pnlTratamientos;
+    private final TratamientoDominio tratamiento;
+    private final TratamientoBO tratamientoBO;
 
+    private CustomLabel lblDescripcion;
+    private CustomLabel lblDuracion;
+    private CustomLabel lblMedicamentos;
+    private CustomLabel lblCita;
 
-    //----------PLACEHOLDER HARCODEADO-----------
-    //Dejar valores sin asignar como declaración simple
+    public PnlElementoTratamiento(PnlTratamientos pnlTratamientos, TratamientoDominio tratamiento, TratamientoBO tratamientoBO) {
+        this.pnlTratamientos = pnlTratamientos;
+        this.tratamiento = tratamiento;
+        this.tratamientoBO = tratamientoBO;
 
-    String medicamento = "paracetamol, 200mg";
-    String duracion = "7 días";
-    String cita = "C-001";
-    //----------FIN DEL PLACEHOLDER-----------
+        construirUI();
+        inicializarEventos();
 
+        setMaximumSize(new Dimension(style.frameX, 50));
+        setMinimumSize(new Dimension(style.frameX, 50));
+        setPreferredSize(new Dimension(style.frameX, 50));
+        setBackground(style.grisBase);
+    }
 
-    Style style = new Style();
-    Dimension dimension = new Dimension(Style.frameX - 20, 70);
-    PnlTratamientos pnlTratamientos;
-    PnlElementoTratamiento pnlElementoTratamiento = this;
-
-    boolean testeoColor = false;
-
-    CustomLabel lblMedicamento = new CustomLabel("   " + medicamento, 18);
-    CustomLabel lblDuracion = new CustomLabel("       " + duracion + "      ", 18);
-    CustomLabel lblCita = new CustomLabel("     "  + cita + "        ", 18);
-
-
-    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
-    //Agregar de parámetro un objeto tipo tratamiento
-
-    //public PnlElementoTratamiento(PnlTratamientos pnlTratamientos, Tratamiento tratamiento) {
-    public PnlElementoTratamiento(PnlTratamientos pnlTratamientos) {
-
-        //Establecimiento de panel
-        setMaximumSize(dimension);
-        setMinimumSize(dimension);
-        setPreferredSize(dimension);
+    private void construirUI() {
+        setLayout(new GridLayout(1, 4));
         setBackground(style.grisBase);
 
-        this.pnlTratamientos = pnlTratamientos;
+        lblDescripcion = new CustomLabel(tratamiento.getDescripcion(), style.letraSize);
+        lblDuracion = new CustomLabel(tratamiento.getDuracion(), style.letraSize);
+        lblMedicamentos = new CustomLabel(tratamiento.getMedicamentos(), style.letraSize);
+        lblCita = new CustomLabel(String.valueOf(tratamiento.getId_cita()), style.letraSize);
 
-
-        //----------LÓGICA AQUÍ----------
-        /*
-        //Asignación de variables
-
-        medicamento = tratamiento.getMedicamento();
-        duracion = tratamiento.getDuracion();
-        cita = tratamiento.getCita();
-
-        */
-        //----------FIN DE LÓGICA----------
-
-
-        //Acciones del panel
-        addMouseListener(new MouseAdapter() {
-            //Hover
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                setBackground(style.grisBaseHover);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                setBackground(style.grisBase);
-            }
-
-            //Mostrar info al ser clickeado
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                //----------PLACEHOLDER HARCODEADO-----------
-                DlgDetallesTratamiento detalles = new DlgDetallesTratamiento(null, pnlTratamientos, pnlElementoTratamiento);
-                detalles.setVisible(true);
-                //----------FIN DEL PLACEHOLDER-----------
-
-
-                //----------LÓGICA AQUÍ----------
-                /*
-
-                DlgDetallesTratamiento detalles = new DlgDetallesTratamiento(null, pnlTratamientos, pnlElementoTratamiento, tratamiento);
-                detalles.setVisible(true);
-
-                */
-                //----------FIN DE LÓGICA----------
-
-
-            }
-
-        });
-
-        add(lblMedicamento);
+        add(lblDescripcion);
         add(lblDuracion);
+        add(lblMedicamentos);
         add(lblCita);
 
+        setOpaque(true);
+    }
+
+    private void inicializarEventos() {
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                abrirDetalles();
+            }
+        });
+    }
+
+    private void abrirDetalles() {
+        DlgDetallesTratamiento dlg = new DlgDetallesTratamiento((Frame) SwingUtilities.getWindowAncestor(this),
+                pnlTratamientos, tratamiento, tratamientoBO);
+        dlg.setVisible(true);
     }
 
     public void refresh() {
-
-        System.out.println("refresh pnlElementoTratamiento");
-
+        lblDescripcion.setText(tratamiento.getDescripcion());
+        lblDuracion.setText(tratamiento.getDuracion());
+        lblMedicamentos.setText(tratamiento.getMedicamentos());
+        lblCita.setText(String.valueOf(tratamiento.getId_cita()));
         revalidate();
         repaint();
     }

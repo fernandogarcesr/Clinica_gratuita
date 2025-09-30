@@ -1,5 +1,10 @@
-package Clinica.src.main.java.Presentacion.dialogs.registro;
+package Presentacion.dialogs.registro;
 
+import BO.PacienteBO;
+import DAO.CitaDAO;
+import DAO.PacienteDAO;
+import DTO.PacienteDTO;
+import Dominios.PacienteDominio;
 import Presentacion.paneles.PnlPacientes;
 import Presentacion.styles.*;
 
@@ -7,15 +12,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.Period;
 
 public class DlgRegistrarPaciente extends JDialog {
+   private PacienteDAO pacienteDAO;
+   private CitaDAO citaDAO;
+     private final PacienteBO pacienteBO;
+    private final PnlPacientes pnlPacientes;
 
-    boolean testeoColor = false;
-    Style style = new Style();
-    String nombres, apellidoP, apellidoM, sexo, diaN, mesN, anioN, correo, telefono, direccion;
-    PnlPacientes pnlPacientes;
+    // Variables de modo edición
+    private boolean modoEdicion = false;
+    private PacienteDominio pacienteEdicion;
 
-    //Labels
+    // Labels
     CustomLabel lblTitulo = new CustomLabel("Registrar paciente", 32);
     CustomLabel lblNombre = new CustomLabel("Nombre completo", 24);
     CustomLabel lblSexo = new CustomLabel("Sexo", 24);
@@ -24,18 +34,14 @@ public class DlgRegistrarPaciente extends JDialog {
     CustomLabel lblTelefono = new CustomLabel("Teléfono", 24);
     CustomLabel lblDireccion = new CustomLabel("Dirección", 24);
 
-    //hardcodeo de sexos (???)
-    String[] sexos = {"Masculino", "Femenino", "Helicóptero apache"};
-    String[] fechaDias = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
-    String[] fechaMeses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
-    String[] fechaAnios = {"2025", "2026"};
+    // Combos
+    String[] sexos = {"Masculino", "Femenino", "OTRO"};
+    CustomComboBox cboxSexos = new CustomComboBox(Dominios.ENUM.Sexo.values());
+    CustomComboBox cboxFechaDias = new CustomComboBox(generarDias());
+    CustomComboBox cboxFechaMeses = new CustomComboBox(generarMeses());
+    CustomComboBox cboxFechaAnios;
 
-    //Textfields y comboboxes
-    CustomComboBox cboxSexos = new CustomComboBox(sexos);
-    CustomComboBox cboxFechaDias = new CustomComboBox(fechaDias);
-    CustomComboBox cboxFechaMeses = new CustomComboBox(fechaMeses);
-    CustomComboBox cboxFechaAnios = new CustomComboBox(fechaAnios);
-
+    // Inputs
     TxtFieldPh txtfldNombres = new TxtFieldPh("Nombre(s)", true, 200, 40, 24);
     TxtFieldPh txtfldApellidoP = new TxtFieldPh("Apellido paterno", true, 200, 40, 24);
     TxtFieldPh txtfldApellidoM = new TxtFieldPh("Apellido materno", true, 200, 40, 24);
@@ -43,35 +49,47 @@ public class DlgRegistrarPaciente extends JDialog {
     TxtFieldPh txtfldTelefono = new TxtFieldPh("Teléfono", true, 200, 40, 24);
     TxtFieldPh txtfldDireccion = new TxtFieldPh("Dirección", true, 200, 40, 24);
 
-    //Botones
+    // Botón
     CustomButton btnGuardar = new CustomButton("Registrar");
 
-    //contenedores
-    ContainerPanel contenido = new ContainerPanel(style.dialogX, style.dialogY, style.grisDialog, true);
+    // Contenedor
+    ContainerPanel contenido = new ContainerPanel(new Style().dialogX, new Style().dialogY, new Style().grisDialog, true);
 
-    //Espacios
-    Espaciador espaciadorv1 = new Espaciador(10, 50);
-    Espaciador espaciadorv2 = new Espaciador(10, 50);
-
-
-    public DlgRegistrarPaciente(Frame parent, PnlPacientes pnlPacientes) {
-
-        //Setup del dialog
-        //super(parent, "Detalles de cita", true);
-        super(parent, "Agendar cita");
-        setSize(style.dimensionDialog);
-        setLocationRelativeTo(parent);
-        setBackground(style.grisDialog);
-
+    // ---------- CONSTRUCTOR REGISTRO ----------
+    public DlgRegistrarPaciente(Frame parent, PnlPacientes pnlPacientes, PacienteBO pacienteBO) {
+        super(parent, "Registrar paciente", true);
         this.pnlPacientes = pnlPacientes;
+        this.pacienteBO = pacienteBO;
+        inicializar(false, null);
+    }
 
+    // ---------- CONSTRUCTOR EDICIÓN ----------
+    public DlgRegistrarPaciente(Frame parent, PnlPacientes pnlPacientes,
+                            PacienteDominio pacienteEdicion, boolean modoEdicion) {
+        super(parent, "Editar paciente", true);
+        this.pnlPacientes = pnlPacientes;
+        this.pacienteBO = new PacienteBO(pacienteDAO, citaDAO);
+        this.modoEdicion = modoEdicion;
+        this.pacienteEdicion = pacienteEdicion;
+        inicializar(true, pacienteEdicion);
+    }
+
+    // ---------- INICIALIZAR UI ----------
+    private void inicializar(boolean esEdicion, PacienteDominio paciente) {
+        setSize(new Style().dimensionDialog);
+        setLocationRelativeTo(getParent());
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
 
-        //Contenido
-        contenido.add(espaciadorv1);
-        contenido.add(lblTitulo);
-        contenido.add(espaciadorv2);
+        // Años dinámicos
+        int anioActual = LocalDate.now().getYear();
+        String[] anios = new String[anioActual - 1920 + 1];
+        for (int i = 0; i <= anioActual - 1920; i++) {
+            anios[i] = String.valueOf(1920 + i);
+        }
+        cboxFechaAnios = new CustomComboBox(anios);
 
+        // Contenido
+        contenido.add(lblTitulo);
         contenido.add(lblNombre);
         contenido.add(txtfldNombres);
         contenido.add(txtfldApellidoP);
@@ -94,46 +112,126 @@ public class DlgRegistrarPaciente extends JDialog {
         contenido.add(lblDireccion);
         contenido.add(txtfldDireccion);
 
-
-        //Botones
+        // Botón guardar
         btnGuardar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                registrarPaciente();
+                guardarPaciente();
             }
         });
         contenido.add(btnGuardar);
 
-
         add(contenido);
 
+        // Si es edición, precargar datos
+        if (esEdicion && paciente != null) {
+            precargarDatos(paciente);
+        }
     }
 
-    //----------LÓGICA AQUÍ----------
+    // ---------- PRECARGAR DATOS EN EDICIÓN ----------
+    private void precargarDatos(PacienteDominio p) {
+        lblTitulo.setText("Editar paciente");
+        btnGuardar.setText("Guardar cambios");
 
-    public void registrarPaciente() {
+        txtfldNombres.setText(p.getNombre());
+        txtfldApellidoP.setText(p.getApellidoPaterno());
+        txtfldApellidoM.setText(p.getApellidoMaterno());
+        txtfldCorreo.setText(p.getEmail());
+        txtfldTelefono.setText(p.getTelefono());
+        txtfldDireccion.setText(p.getDireccion());
 
-        //hacer cosa mágica para que se guarde el tratamiento
-        //agregar validadores (?)
-        //extracción de la info a strings
-        nombres = txtfldNombres.getText();
-        apellidoP = txtfldApellidoP.getText();
-        apellidoM = txtfldApellidoM.getText();
-        sexo = cboxSexos.getSelectedItem().toString();
-        diaN = cboxFechaDias.getSelectedItem().toString();
-        mesN = cboxFechaMeses.getSelectedItem().toString();
-        anioN = cboxFechaAnios.getSelectedItem().toString();
-        correo = txtfldCorreo.getText();
-        telefono = txtfldTelefono.getText();
-        direccion = txtfldDireccion.getText();
+        if (p.getSexo() != null) {
+            try {
+                Dominios.ENUM.Sexo sexoEnum = Dominios.ENUM.Sexo.valueOf(p.getSexo());
+                cboxSexos.setSelectedItem(sexoEnum);
+            } catch (IllegalArgumentException e) {
+                // Si en BD hay un valor inesperado, no truena
+                cboxSexos.setSelectedIndex(-1);
+            }
+        }
 
-        System.out.println("Haz de cuenta que se registró el paciente con los datos: " + nombres + apellidoP + apellidoM + sexo + diaN + mesN + anioN + correo + telefono + direccion);
-
-        pnlPacientes.refresh();
-        this.dispose();
-
+        // Edad -> aproximar año
+        int anoAprox = LocalDate.now().getYear() - p.getEdad();
+        cboxFechaAnios.setSelectedItem(String.valueOf(anoAprox));
+        cboxFechaMeses.setSelectedItem("Enero");
+        cboxFechaDias.setSelectedItem("1");
     }
 
-    //----------FIN DE LÓGICA----------
+    // ---------- GUARDAR PACIENTE ----------
+    private void guardarPaciente() {
+        try {
+            String nombres = txtfldNombres.getText().trim();
+            String apellidoP = txtfldApellidoP.getText().trim();
+            String apellidoM = txtfldApellidoM.getText().trim();
+            String correo = txtfldCorreo.getText().trim();
+            String telefono = txtfldTelefono.getText().trim();
+            String direccion = txtfldDireccion.getText().trim();
 
+            Dominios.ENUM.Sexo sexoEnum = (Dominios.ENUM.Sexo) cboxSexos.getSelectedItem();
+            String sexoStr = sexoEnum != null ? sexoEnum.name() : null;
+
+            int dia = Integer.parseInt((String) cboxFechaDias.getSelectedItem());
+            int mes = mapMesEspANumero((String) cboxFechaMeses.getSelectedItem());
+            int anio = Integer.parseInt((String) cboxFechaAnios.getSelectedItem());
+            LocalDate fechaNac = LocalDate.of(anio, mes, dia);
+            int edad = Period.between(fechaNac, LocalDate.now()).getYears();
+
+            PacienteDTO p = new PacienteDTO();
+            p.setNombre(nombres);
+            p.setApellidoPaterno(apellidoP);
+            p.setApellidoMaterno(apellidoM);
+            p.setEdad(edad);
+            p.setTelefono(telefono);
+            p.setEmail(correo);
+            p.setDireccion(direccion);
+            p.setSexo(sexoStr);
+
+            if (modoEdicion && pacienteEdicion != null) {
+    // Pasar el id del dominio al BO
+    pacienteBO.actualizarPaciente(pacienteEdicion.getId_paciente(), p);
+    JOptionPane.showMessageDialog(this, "Paciente actualizado correctamente");
+} else {
+    pacienteBO.registrarPaciente(p);
+    JOptionPane.showMessageDialog(this, "Paciente registrado correctamente");
+}
+
+            pnlPacientes.refresh();
+            dispose();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al guardar paciente: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    // ---------- UTILS ----------
+    private static String[] generarDias() {
+        String[] dias = new String[31];
+        for (int i = 0; i < 31; i++) dias[i] = String.valueOf(i + 1);
+        return dias;
+    }
+
+    private static String[] generarMeses() {
+        return new String[]{"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+    }
+
+    private int mapMesEspANumero(String mes) {
+        switch (mes.toLowerCase()) {
+            case "enero": return 1;
+            case "febrero": return 2;
+            case "marzo": return 3;
+            case "abril": return 4;
+            case "mayo": return 5;
+            case "junio": return 6;
+            case "julio": return 7;
+            case "agosto": return 8;
+            case "septiembre": return 9;
+            case "octubre": return 10;
+            case "noviembre": return 11;
+            case "diciembre": return 12;
+            default: return 1;
+        }
+    }
 }

@@ -1,16 +1,24 @@
-package Clinica.src.main.java.Presentacion.paneles;
+package Presentacion.paneles;
 
+import DAO.CitaDAO;
+import DAO.DoctorDAO;
+import DAO.PacienteDAO;
+import Dominios.CitaDominio;
+import Dominios.DoctorDominio;
+import Dominios.PacienteDominio;
 import Presentacion.dialogs.registro.DlgRegistrarCita;
 import Presentacion.paneles.elementos.PnlElementoCita;
 import Presentacion.styles.*;
 
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class PnlCitas extends JPanel {
-
+    private JPanel pnlListado;
+    private javax.swing.JScrollPane scrollPane;
     Style style = new Style();
     boolean testeoColor = false;
     PnlCitas pnlCitas = this;
@@ -44,7 +52,6 @@ public class PnlCitas extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         //pnlCitas = this;
 
-
         add(espaciov1);
 
         //Encabezado
@@ -52,35 +59,23 @@ public class PnlCitas extends JPanel {
         titulo.add(lblTitulo, BorderLayout.WEST);
         add(titulo);
 
-        columnas.add(espacioh1);
+        columnas.setLayout(new GridLayout(1, 4));
         columnas.add(lblMedico);
-        columnas.add(espacioh2);
         columnas.add(lblPaciente);
-        columnas.add(espacioh3);
         columnas.add(lblFechaHora);
-        columnas.add(espacioh4);
         columnas.add(lblEstado);
-
         add(columnas);
-
-
-        //----------PLACEHOLDER HARDCODEADO----------
-        PnlElementoCita ejemplo = new PnlElementoCita(this);
-        add(ejemplo);
-        //----------FIN DE PLACEHOLDER----------
-
-
-        //----------LÓGICA AQUÍ----------
-        /*
-
-        for(int i = 0; i < citas.length; i++){
-            PnlElementoCita elementoCita = new PnlElementoCita(citas);
-            add(elementoCita)
-        }
-
-        */
-        //----------FIN DE LÓGICA----------
-
+        
+        // Panel listado de citas dentro de scroll
+        pnlListado = new JPanel();
+        pnlListado.setLayout(new BoxLayout(pnlListado, BoxLayout.Y_AXIS));
+        pnlListado.setBackground(Color.DARK_GRAY);
+        
+         scrollPane = new JScrollPane(pnlListado);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setPreferredSize(new Dimension(style.frameX, 400));
+        add(scrollPane);
+ 
 
         btnAgendarCita.addMouseListener(new MouseAdapter() {
             @Override
@@ -96,17 +91,58 @@ public class PnlCitas extends JPanel {
 
         setOpaque(testeoColor);
         setVisible(true);
+        
+        refresh();//cargar datos al inicio
 
     }
 
     public void refresh() {
-        /*
-        DlgRegistrarCita registrar = new DlgRegistrarCita(null);
-        registrar.setVisible(true);*/
 
-        System.out.println("refresh pnlCitas");
+        try {
+            // limpiar panel
+            pnlListado.removeAll();
 
-        revalidate();
-        repaint();
+            // usar DAO para obtener todas las citas
+            CitaDAO citaDAO = new CitaDAO();
+            List<CitaDominio> listCitas = citaDAO.readall();
+
+            // obtener doctores y pacientes
+            DoctorDAO doctorDAO = new DoctorDAO();
+            List<DoctorDominio> docs = doctorDAO.readall();
+
+            PacienteDAO pacienteDAO = new PacienteDAO();
+            List<PacienteDominio> pacs = pacienteDAO.readall();
+
+            for (CitaDominio cdom : listCitas) {
+                int idCita = cdom.getId_citas();
+                int idDoc = cdom.getId_doctor();
+                int idPac = cdom.getId_paciente();
+                String fechaHora = cdom.getFechaHora() != null ? cdom.getFechaHora().toString() : "";
+                String motivo = cdom.getMotivo() != null ? cdom.getMotivo() : "";
+                String estado = cdom.getEstado() != null ? cdom.getEstado().name(): "";
+
+                String nombreDoc = docs.stream()
+                        .filter(d -> d.getId_doctor() == idDoc)
+                        .map(DoctorDominio::getNombre)
+                        .findFirst().orElse("Doctor N/D");
+
+                String nombrePac = pacs.stream()
+                        .filter(p -> p.getId_paciente() == idPac)
+                        .map(PacienteDominio::getNombre)
+                        .findFirst().orElse("Paciente N/D");
+
+                // Crear panel de cita con tus estilos (PnlElementoCita)
+                PnlElementoCita elemento = new PnlElementoCita(idCita, nombreDoc, nombrePac, fechaHora, estado, motivo, this);
+                pnlListado.add(elemento);
+                pnlListado.add(Box.createVerticalStrut(10)); // espacio entre elementos
+            }
+
+            pnlListado.revalidate();
+            pnlListado.repaint();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al cargar citas: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 }

@@ -109,18 +109,19 @@ public class DoctorDAO implements IDoctorDAO {
     }
 
     @Override
-    public boolean update(DoctorDTO doctor) {
+    public boolean update(int id,DoctorDominio dominio) {
         
         String sql = """
                     UPDATE doctores 
-                    SET nombre=? ,especialidad=? ,telefono=?
-                    WHERE email = ?;
+                    SET nombre=? ,especialidad=? ,telefono=?, email=?
+                    WHERE id_doctores = ?;
                     """;
         try (Connection con = ConexionJDBC.getConnection(); PreparedStatement ps = con.prepareCall(sql)) {
-            ps.setString(1, doctor.getNombre());
-            ps.setString(2, doctor.getEspecialidad());
-            ps.setString(3, doctor.getTelefono());
-            ps.setString(4, doctor.getEmail());
+            ps.setString(1, dominio.getNombre());
+            ps.setString(2, dominio.getEspecialidad());
+            ps.setString(3, dominio.getTelefono());
+            ps.setString(4, dominio.getEmail());
+            ps.setInt(5, dominio.getId_doctor());
 
             int filasAfectadas = ps.executeUpdate();
 

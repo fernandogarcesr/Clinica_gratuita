@@ -1,4 +1,4 @@
-package Clinica.src.main.java.Presentacion.styles;
+package Presentacion.styles;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxUI;
@@ -26,7 +26,7 @@ public class CustomComboBox<T> extends JComboBox<T> {
 
         setBackground(Color.WHITE);
         setForeground(Color.BLACK);
-        setFont(FuenteUtil.cargarFuenteInter(16, "Inter_Light"));
+        //setFont(FuenteUtil.cargarFuenteInter(16, "Inter_Light"));
         setFocusable(false);
         setOpaque(false);
         setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -37,7 +37,7 @@ public class CustomComboBox<T> extends JComboBox<T> {
             public Component getListCellRendererComponent(JList<?> list, Object value,
                                                           int index, boolean isSelected, boolean cellHasFocus) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                label.setFont(FuenteUtil.cargarFuenteInter(14, "Inter_Light"));
+                //label.setFont(FuenteUtil.cargarFuenteInter(14, "Inter_Light"));
                 label.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
                 label.setOpaque(true);
 

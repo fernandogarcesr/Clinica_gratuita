@@ -15,6 +15,7 @@ public class DoctorBO {
 
     private IDoctorDAO doctorDAO;
     private ICitaDAO citaDAO;
+    
 
     /**
      * Constructor que recibe las dependencias necesarias para operar sobre
@@ -54,18 +55,26 @@ public class DoctorBO {
      * inválidos.
      * @throws RuntimeException si ocurre un error al actualizar el doctor.
      */
-    public void actualizarDoctor(DoctorDTO doctor) {
-        DoctorDominio existente = doctorDAO.buscarDoctor(doctor);
-        if (existente == null) {
-            throw new IllegalArgumentException("Doctor no existe");
-        }
+   public void actualizarDoctor(int id_doctor, DoctorDTO doctor) {
+     // valida DTO
+    validarDoctor(doctor);
 
-        validarDoctor(doctor);
+    // convertir DTO -> Dominio
+    Dominios.DoctorDominio dominio = convertirDTOaDominio(doctor);
+    dominio.setId_doctor(id_doctor); // asigna el id que viene por separado
 
-        boolean actualizado = doctorDAO.update(doctor);
-        if (!actualizado) {
-            throw new RuntimeException("Error al actualizar el doctor");
-        }
+    // verificar existencia
+    Dominios.DoctorDominio existente = doctorDAO.buscarId(id_doctor);
+    if (existente == null) {
+        throw new IllegalArgumentException("Doctor no existe (id=" + id_doctor + ")");
+    }
+
+    // actualizar
+    boolean actualizado = doctorDAO.update(id_doctor,dominio);
+    if (!actualizado) {
+        throw new RuntimeException("Error al actualizar el doctor");
+    }
+    
     }
 
     /**
@@ -103,11 +112,8 @@ public class DoctorBO {
      * de lectura.
      */
     public List<DoctorDominio> listarDoctores() {
-        List<DoctorDominio> doctores = doctorDAO.readall();
-        if (doctores == null || doctores.isEmpty()) {
-            throw new RuntimeException("No se encontraron doctores");
-        }
-        return doctores;
+         List<DoctorDominio> doctores = doctorDAO.readall();
+    return doctores != null ? doctores : List.of();
     }
 
     /**
@@ -147,4 +153,13 @@ public class DoctorBO {
             throw new IllegalArgumentException("El email es obligatorio");
         }
     }
+    
+    private Dominios.DoctorDominio convertirDTOaDominio(DTO.DoctorDTO dto) {
+    Dominios.DoctorDominio d = new Dominios.DoctorDominio();
+    d.setNombre(dto.getNombre());
+    d.setEspecialidad(dto.getEspecialidad());
+    d.setTelefono(dto.getTelefono());
+    d.setEmail(dto.getEmail());
+    return d;
+}
 }

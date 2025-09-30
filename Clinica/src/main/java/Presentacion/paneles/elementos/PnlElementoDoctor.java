@@ -1,9 +1,13 @@
-package Clinica.src.main.java.Presentacion.paneles.elementos;
+package Presentacion.paneles.elementos;
 
+import BO.DoctorBO;
+import DAO.CitaDAO;
+import DAO.DoctorDAO;
+import Dominios.DoctorDominio;
 import Presentacion.dialogs.detalles.DlgDetallesDoctor;
+
 import Presentacion.paneles.PnlDoctores;
 import Presentacion.styles.CustomLabel;
-import Presentacion.styles.Espaciador;
 import Presentacion.styles.Style;
 
 import javax.swing.*;
@@ -13,107 +17,69 @@ import java.awt.event.MouseEvent;
 
 public class PnlElementoDoctor extends JPanel {
 
-    //----------PLACEHOLDER HARCODEADO-----------
-    //Dejar valores sin asignar como declaración simple
+    private final PnlDoctores pnlDoctores;
+    private final DoctorDominio doctor;
+    private final DoctorBO doctorBO;
+    private Style style = new Style();
 
-    String nombre = "Dr. Pancracio López";
-    String especialidad = "Cardiólogo";
-    String correo = "ola@gmail.com";
-    String telefono = "1234-567-890";
-    //----------FIN DEL PLACEHOLDER-----------
+    private CustomLabel lblNombre;
+    private CustomLabel lblEspecialidad;
+    private CustomLabel lblCorreo;
+    private CustomLabel lblTelefono;
 
-
-    Style style = new Style();
-    Dimension dimension = new Dimension(Style.frameX - 20, 70);
-    PnlDoctores pnlDoctores;
-    PnlElementoDoctor pnlElementoDoctor = this;
-
-    boolean testeoColor = false;
-
-    CustomLabel lblNombre = new CustomLabel("  " + nombre, 18);
-    CustomLabel lblEspecialidad = new CustomLabel("   " + especialidad, 18);
-    CustomLabel lblCorreo = new CustomLabel("   " + correo + "     ", 18);
-    CustomLabel lblTelefono = new CustomLabel("   " + telefono + "     ", 18);
-    Espaciador espacioh1 = new Espaciador(10, 10);
-
-
-    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
-    //Agregar de parámetro un objeto tipo doctor
-
-    //public PnlElementoDoctor(PnlDoctores pnlDoctores, Doctor doctor) {
-    public PnlElementoDoctor(PnlDoctores pnlDoctores) {
-
-        //Establecimiento de panel
-        setMaximumSize(dimension);
-        setMinimumSize(dimension);
-        setPreferredSize(dimension);
-        setBackground(style.grisBase);
-        setLayout(new GridLayout(1, 6));
-
+    public PnlElementoDoctor(PnlDoctores pnlDoctores, DoctorDominio doctor, DoctorBO doctorBO) {
         this.pnlDoctores = pnlDoctores;
+        this.doctor = doctor;
+        this.doctorBO = doctorBO;
 
+        construirUI();
+        inicializarEventos();
 
-        //----------LÓGICA AQUÍ----------
-        /*
-        //Asignación de variables
+        setMaximumSize(new Dimension(style.frameX, 50));
+        setPreferredSize(new Dimension(style.frameX, 50));
+        setBackground(style.grisBase);
+        setLayout(new GridLayout(1, 4));
+    }
 
-        nombre = doctor.getNombreDoctor();
-        especialidad = doctor.getEspecialidad();
-        correo = doctor.getCorreo();
-        telefono = doctor.getTelefono();
-
-        */
-        //----------FIN DE LÓGICA----------
-
-
-        //Acciones del panel
-        addMouseListener(new MouseAdapter() {
-            //Hover
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                setBackground(style.grisBaseHover);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                setBackground(style.grisBase);
-            }
-
-            //Mostrar info al ser clickeado
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                //----------PLACEHOLDER HARCODEADO-----------
-                DlgDetallesDoctor detalles = new DlgDetallesDoctor(null, pnlDoctores, pnlElementoDoctor);
-                detalles.setVisible(true);
-                //----------FIN DEL PLACEHOLDER-----------
-
-
-                //----------LÓGICA AQUÍ----------
-                /*
-
-                DlgDetallesDoctor detalles = new DlgDetallesDoctor(null, pnlDoctores, pnlElementoDoctor, doctor);
-                detalles.setVisible(true);
-
-                */
-                //----------FIN DE LÓGICA----------
-
-
-            }
-        });
+    private void construirUI() {
+        lblNombre = new CustomLabel(doctor.getNombre(), style.letraSize);
+        lblEspecialidad = new CustomLabel(doctor.getEspecialidad(), style.letraSize);
+        lblCorreo = new CustomLabel(doctor.getEmail(), style.letraSize);
+        lblTelefono = new CustomLabel(doctor.getTelefono(), style.letraSize);
 
         add(lblNombre);
         add(lblEspecialidad);
         add(lblCorreo);
         add(lblTelefono);
-        //add(espacioh1);
 
+        setOpaque(true);
     }
 
+    private void inicializarEventos() {
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                abrirDetalles();
+            }
+        });
+    }
+
+    private void abrirDetalles() {
+    
+    DlgDetallesDoctor dlgDetalles = new DlgDetallesDoctor(
+            (Frame) SwingUtilities.getWindowAncestor(this), 
+            pnlDoctores,                                   
+            this,                                 
+            doctor,                                        
+            doctorBO                                    
+    );
+    dlgDetalles.setVisible(true);}
+
     public void refresh() {
-
-        System.out.println("refresh pnlElementoDoctor");
-
+        lblNombre.setText(doctor.getNombre());
+        lblEspecialidad.setText(doctor.getEspecialidad());
+        lblCorreo.setText(doctor.getEmail());
+        lblTelefono.setText(doctor.getTelefono());
         revalidate();
         repaint();
     }

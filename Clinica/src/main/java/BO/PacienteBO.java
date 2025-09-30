@@ -1,9 +1,11 @@
 package BO;
 
+import DAO.PacienteDAO;
 import DTO.PacienteDTO;
 import Dominios.PacienteDominio;
 import Interfaces.IPacienteDAO;
 import Interfaces.ICitaDAO;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -24,7 +26,7 @@ public class PacienteBO {
      * @param citaDAO DAO para validación de citas asociadas.
      */
     public PacienteBO(IPacienteDAO pacienteDAO, ICitaDAO citaDAO) {
-        this.pacienteDAO = pacienteDAO;
+        this.pacienteDAO = new PacienteDAO();
         this.citaDAO = citaDAO;
     }
 
@@ -36,13 +38,15 @@ public class PacienteBO {
      * @throws IllegalArgumentException si los datos son inválidos.
      * @throws RuntimeException si ocurre un error al insertar el paciente.
      */
-    public void registrarPaciente(PacienteDTO paciente) {
+    public int registrarPaciente(PacienteDTO paciente) throws Exception {
         validarPaciente(paciente);
 
-        boolean registrado = pacienteDAO.insert(paciente);
-        if (!registrado) {
-            throw new RuntimeException("Error al registrar el paciente");
+        int id = pacienteDAO.insert(paciente);
+        if (id == -1) {
+            throw new Exception("Error al registrar paciente");
         }
+        return id;
+
     }
 
     /**
@@ -54,18 +58,25 @@ public class PacienteBO {
      * inválidos.
      * @throws RuntimeException si ocurre un error al actualizar el paciente.
      */
-    public void actualizarPaciente(PacienteDTO paciente) {
-        PacienteDominio existente = pacienteDAO.buscarPaciente(paciente);
-        if (existente == null) {
-            throw new IllegalArgumentException("Paciente no existe");
-        }
+    public void actualizarPaciente(int id_paciente,PacienteDTO paciente) {
+        // Validar DTO antes de convertir
+    validarPaciente(paciente);
 
-        validarPaciente(paciente);
+    // Convertir DTO → Dominio
+    PacienteDominio dominio = convertirDTOaDominio(paciente);
+    dominio.setId_paciente(id_paciente);
 
-        boolean actualizado = pacienteDAO.update(paciente);
-        if (!actualizado) {
-            throw new RuntimeException("Error al actualizar el paciente");
-        }
+    // Buscar si existe en la BD
+    PacienteDominio existente = pacienteDAO.buscarId(id_paciente);
+    if (existente == null) {
+        throw new IllegalArgumentException("El paciente con id " + id_paciente + " no existe");
+    }
+
+    // Actualizar en la BD
+    boolean actualizado = pacienteDAO.update(dominio);
+    if (!actualizado) {
+        throw new RuntimeException("Error al actualizar el paciente");
+    }
     }
 
     /**
@@ -141,7 +152,7 @@ public class PacienteBO {
             throw new IllegalArgumentException("La edad es obligatoria");
         }
         if (paciente.getSexo() == null
-                || (!paciente.getSexo().equals("Masculino") && !paciente.getSexo().equals("Femenino"))) {
+                || (!paciente.getSexo().equals("MASCULINO") && !paciente.getSexo().equals("FEMENINO") && !paciente.getSexo().equals("OTRO"))) {
             throw new IllegalArgumentException("Sexo inválido");
         }
         if (paciente.getDireccion() == null || paciente.getDireccion().isEmpty()) {
@@ -153,5 +164,19 @@ public class PacienteBO {
         if (paciente.getEmail() == null || paciente.getEmail().isEmpty()) {
             throw new IllegalArgumentException("El email es obligatorio");
         }
+    }
+
+    private PacienteDominio convertirDTOaDominio(PacienteDTO dto) {
+        PacienteDominio dominio = new PacienteDominio();
+        dominio.setNombre(dto.getNombre());
+        dominio.setApellidoPaterno(dto.getApellidoPaterno());
+        dominio.setApellidoMaterno(dto.getApellidoMaterno());
+        dominio.setEmail(dto.getEmail());
+        dominio.setTelefono(dto.getTelefono());
+        dominio.setDireccion(dto.getDireccion());
+        dominio.setEdad(dto.getEdad());   // 👈 aquí estaba faltando
+        dominio.setSexo(dto.getSexo());
+        // 👇 no se pone id aquí, porque lo asignas después en actualizarPaciente
+        return dominio;
     }
 }

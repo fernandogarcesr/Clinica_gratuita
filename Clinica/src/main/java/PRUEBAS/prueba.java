@@ -7,6 +7,7 @@ package PRUEBAS;
 import DAO.PacienteDAO;
 import DTO.PacienteDTO;
 import Dominios.ENUM.Sexo;
+import Dominios.PacienteDominio;
 
 /**
  *
@@ -17,9 +18,13 @@ public class prueba {
     public static void main(String[] args) {
         PacienteDAO pdao = new PacienteDAO();
 
-        System.out.println(pdao.insert(new PacienteDTO("Gamma prueba", 20, Sexo.FEMENINO, "5to qlo", "666", "chichis.com"))
-        );
+       
+        PacienteDTO paciente = new PacienteDTO("Fernando", "Garces", "Rodriguez", 22, "Masculino", "Calle california #234", "6441345674", "Fercho@gmail.com");
 
+        pdao.insert(paciente);
+        
+        System.out.println("Paciente insertado con exito!!" + paciente.getNombre());
+       
     }
 
 }

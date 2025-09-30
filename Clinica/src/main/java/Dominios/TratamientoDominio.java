@@ -70,7 +70,12 @@ public class TratamientoDominio {
 
     @Override
     public String toString() {
-        return "TratamientosDominios{" + "id_tratamiento=" + id_tratamiento + ", descripcion=" + descripcion + ", duracion=" + duracion + ", medicamentos=" + medicamentos + ", id_cita=" + id_cita + '}';
+         return "TratamientoDTO{" +
+                "descripcion='" + descripcion + '\'' +
+                ", duracion='" + duracion + '\'' +
+                ", medicamentos='" + medicamentos + '\'' +
+                ", idCita=" + id_cita +
+                '}';
     }
 
     

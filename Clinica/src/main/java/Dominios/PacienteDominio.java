@@ -15,8 +15,10 @@ public class PacienteDominio {
 
     private int id_paciente;
     private String nombre;
+    private String apellidoPaterno;
+    private String apellidoMaterno;
     private int edad;
-    private Sexo sexo;
+    private String sexo;
     private String direccion;
     private String telefono;
     private String email;
@@ -24,15 +26,35 @@ public class PacienteDominio {
     public PacienteDominio() {
     }
 
-    public PacienteDominio(int id_paciente, String nombre, int edad, Sexo sexo, String direccion, String telefono, String email) {
+    public PacienteDominio(int id_paciente, String nombre, String apellidoPaterno, String apellidoMaterno, int edad, String sexo, String direccion, String telefono, String email) {
         this.id_paciente = id_paciente;
         this.nombre = nombre;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
         this.edad = edad;
         this.sexo = sexo;
         this.direccion = direccion;
         this.telefono = telefono;
         this.email = email;
     }
+
+    public String getApellidoPaterno() {
+        return apellidoPaterno;
+    }
+
+    public void setApellidoPaterno(String apellidoPaterno) {
+        this.apellidoPaterno = apellidoPaterno;
+    }
+
+    public String getApellidoMaterno() {
+        return apellidoMaterno;
+    }
+
+    public void setApellidoMaterno(String apellidoMaterno) {
+        this.apellidoMaterno = apellidoMaterno;
+    }
+
+  
 
     public int getId_paciente() {
         return id_paciente;
@@ -58,11 +80,11 @@ public class PacienteDominio {
         this.edad = edad;
     }
 
-    public Sexo getSexo() {
+    public String getSexo() {
         return sexo;
     }
 
-    public void setSexo(Sexo sexo) {
+    public void setSexo(String sexo) {
         this.sexo = sexo;
     }
 
@@ -92,7 +114,9 @@ public class PacienteDominio {
 
     @Override
     public String toString() {
-        return "PacientesDominio{" + "id_paciente=" + id_paciente + ", nombre=" + nombre + ", edad=" + edad + ", sexo=" + sexo + ", direccion=" + direccion + ", telefono=" + telefono + ", email=" + email + '}';
+        return "PacienteDominio{" + "id_paciente=" + id_paciente + ", nombre=" + nombre + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", edad=" + edad + ", sexo=" + sexo + ", direccion=" + direccion + ", telefono=" + telefono + ", email=" + email + '}';
     }
+
+   
 
 }

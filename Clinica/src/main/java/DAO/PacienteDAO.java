@@ -23,27 +23,41 @@ import java.util.List;
 public class PacienteDAO implements IPacienteDAO {
 
     @Override
-    public boolean insert(PacienteDTO paciente) {
+    public int insert(PacienteDTO paciente) {
         String sql = """
-                     INSERT INTO Pacientes (nombre, edad, sexo, direccion, telefono, email) VALUES
-                     (?, ?, ?, ?, ?, ?);
+                     INSERT INTO Pacientes (nombre, apellido_paterno, apellido_materno, edad, sexo, direccion, telefono, email) VALUES
+                     (?, ?, ?, ?, ?, ?, ?, ?);
              """;
-        try (Connection cn = ConexionJDBC.getConnection(); PreparedStatement ps = cn.prepareCall(sql);) {
+        try (Connection cn = ConexionJDBC.getConnection(); PreparedStatement ps = cn.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);) {
             ps.setString(1, paciente.getNombre());
-            ps.setInt(2, paciente.getEdad());
-            ps.setString(3, paciente.getSexo().toString());
-            ps.setString(4, paciente.getDireccion());
-            ps.setString(5, paciente.getTelefono());
-            ps.setString(6, paciente.getEmail());
+            ps.setString(2, paciente.getApellidoPaterno());
+            ps.setString(3, paciente.getApellidoMaterno());
+            ps.setInt(4, paciente.getEdad());
+            ps.setString(5, paciente.getSexo());
+            ps.setString(6, paciente.getDireccion());
+            ps.setString(7, paciente.getTelefono());
+            ps.setString(8, paciente.getEmail());
 
-            int filasAfectadas = ps.executeUpdate();
-
-            System.out.println("paciente insertado correctamente");
-            return filasAfectadas > 0;
+            int filas = ps.executeUpdate();
+            if (filas == 0) {
+                // No se inserto nada
+                return -1;
+            }
+            //obtener el id generado
+          
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    return -1;
+                }
+            }
 
         } catch (SQLException e) {
+            e.printStackTrace();
             System.out.println("Error: error al insertar un paciente");
-            return false;
+            return -1;
+
         }
 
     }
@@ -70,60 +84,67 @@ public class PacienteDAO implements IPacienteDAO {
     }
 
     @Override
-    public List<PacienteDominio> readall(){
+    public List<PacienteDominio> readall() {
         String sql = """
                     SELECT * FROM pacientes;
                     """;
-        List<PacienteDominio> lista= new LinkedList<>();
-        
-                
-                
+        List<PacienteDominio> lista = new LinkedList<>();
+
         try (Connection cn = ConexionJDBC.getConnection(); PreparedStatement ps = cn.prepareCall(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                int id_paciente=rs.getInt(1);
-                String nombre=rs.getString(2);
-                int edad= rs.getInt(3);
-                Sexo sexo=null;
-                if (rs.getString(4).equalsIgnoreCase("Masculino")) {
-                sexo= Sexo.MASCULINO;
+                int id = rs.getInt("id_paciente");
+                String nombre = rs.getString("nombre");
+                String apellidoP = rs.getString("apellido_paterno");
+                String apellidoM = rs.getString("apellido_materno");
+                int edad = rs.getInt("edad");
+                String sexoStr = rs.getString("sexo");
+                Sexo sexo = null;
+                if ("Masculino".equalsIgnoreCase(sexoStr)) {
+                    sexo = Sexo.MASCULINO;
+                } else if ("Femenino".equalsIgnoreCase(sexoStr)) {
+                    sexo = Sexo.FEMENINO;
+                } else {
+                    sexo = Sexo.OTRO;
                 }
-                if (rs.getString(4).equalsIgnoreCase("Femenino")) {
-                sexo= Sexo.FEMENINO;
-                }
-                String direccion=rs.getString(5);
-                String telefono=rs.getString(6);
-                String email=rs.getString(7);
 
-                PacienteDominio paciente= new PacienteDominio(id_paciente, nombre, edad, sexo, direccion, telefono, email);
+                String direccion = rs.getString("direccion");
+                String telefono = rs.getString("telefono");
+                String email = rs.getString("email");
+
+                PacienteDominio paciente = new PacienteDominio(
+                        id, nombre, apellidoP, apellidoM, edad, sexoStr, direccion, telefono, email
+                );
                 lista.add(paciente);
             }
             return lista;
-
 
         } catch (Exception e) {
             System.out.println("no se pudo consultar los pacientes");
             return lista;
         }
-        
+
 
     }
 
     @Override
-    public boolean update(PacienteDTO paciente) {
+    public boolean update(PacienteDominio paciente) {
 
         String sql = """
                     UPDATE Pacientes 
-                    SET nombre=? ,edad=? ,sexo=? ,direccion=? ,telefono=? 
-                    WHERE email = ?;
+                    SET nombre=? ,apellido_paterno =?, apellido_materno =?, edad=? ,sexo=? ,direccion=? ,telefono=?, email=? 
+                    WHERE id_paciente = ?;
                     """;
         try (Connection con = ConexionJDBC.getConnection(); PreparedStatement ps = con.prepareCall(sql)) {
             ps.setString(1, paciente.getNombre());
-            ps.setInt(2, paciente.getEdad());
-            ps.setString(3, paciente.getSexo().toString());
-            ps.setString(4, paciente.getDireccion());
-            ps.setString(5, paciente.getTelefono());
-            ps.setString(6, paciente.getEmail());
+            ps.setString(2, paciente.getApellidoPaterno());
+            ps.setString(3, paciente.getApellidoMaterno());
+            ps.setInt(4, paciente.getEdad());
+            ps.setString(5, paciente.getSexo());
+            ps.setString(6, paciente.getDireccion());
+            ps.setString(7, paciente.getTelefono());
+            ps.setString(8, paciente.getEmail());
+            ps.setInt(9, paciente.getId_paciente());
 
             int filasAfectadas = ps.executeUpdate();
 
@@ -149,21 +170,27 @@ public class PacienteDAO implements IPacienteDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                int id_paciente=rs.getInt(1);
-                String nombre=rs.getString(2);
-                int edad= rs.getInt(3);
-                Sexo sexo=null;
-                if (rs.getString(4).equalsIgnoreCase("Masculino")) {
-                sexo= Sexo.MASCULINO;
-                }
-                if (rs.getString(4).equalsIgnoreCase("Femenino")) {
-                sexo= Sexo.FEMENINO;
-                }
-                String direccion=rs.getString(5);
-                String telefono=rs.getString(6);
-                String email=rs.getString(7);
+                int id_paciente = rs.getInt("id_paciente");
+                String nombre = rs.getString("nombre");
+                String apellidoP = rs.getString("apellido_paterno");
+                String apellidoM = rs.getString("apellido_materno");
+                int edad = rs.getInt("edad");
 
-                PacienteDominio paciente= new PacienteDominio(id_paciente, nombre, edad, sexo, direccion, telefono, email);
+                Sexo sexo = null;
+                String sexoStr = rs.getString("sexo");
+                if ("Masculino".equalsIgnoreCase(sexoStr)) {
+                    sexo = Sexo.MASCULINO;
+                } else if ("Femenino".equalsIgnoreCase(sexoStr)) {
+                    sexo = Sexo.FEMENINO;
+                } else {
+                    sexo = Sexo.OTRO;
+                }
+
+                String direccion = rs.getString("direccion");
+                String telefono = rs.getString("telefono");
+                String email = rs.getString("email");
+
+                PacienteDominio paciente = new PacienteDominio(id_paciente, nombre, apellidoP, apellidoM, edad, sexoStr, direccion, telefono, email);
                 return paciente;
             }
 
@@ -182,26 +209,32 @@ public class PacienteDAO implements IPacienteDAO {
                     """;
         try (Connection cn = ConexionJDBC.getConnection(); PreparedStatement ps = cn.prepareCall(sql)) {
 
-            ps.setString(1,paciente.getEmail());
+            ps.setString(1, paciente.getEmail());
 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                int id_paciente=rs.getInt(1);
-                String nombre=rs.getString(2);
-                int edad= rs.getInt(3);
-                Sexo sexo=null;
-                if (rs.getString(4).equalsIgnoreCase("Masculino")) {
-                sexo= Sexo.MASCULINO;
-                }
-                if (rs.getString(4).equalsIgnoreCase("Femenino")) {
-                sexo= Sexo.FEMENINO;
-                }
-                String direccion=rs.getString(5);
-                String telefono=rs.getString(6);
-                String email=rs.getString(7);
+                int id_paciente = rs.getInt("id_paciente");
+                String nombre = rs.getString("nombre");
+                String apellidoP = rs.getString("apellido_paterno");
+                String apellidoM = rs.getString("apellido_materno");
+                int edad = rs.getInt("edad");
 
-                PacienteDominio pacienteDominio = new PacienteDominio(id_paciente, nombre, edad, sexo, direccion, telefono, email);
+                Sexo sexo = null;
+                String sexoStr = rs.getString("sexo");
+                if ("Masculino".equalsIgnoreCase(sexoStr)) {
+                    sexo = Sexo.MASCULINO;
+                } else if ("Femenino".equalsIgnoreCase(sexoStr)) {
+                    sexo = Sexo.FEMENINO;
+                } else {
+                    sexo = Sexo.OTRO;
+                }
+
+                String direccion = rs.getString("direccion");
+                String telefono = rs.getString("telefono");
+                String email = rs.getString("email");
+
+                PacienteDominio pacienteDominio = new PacienteDominio(id_paciente, nombre, apellidoP, apellidoM, edad, sexoStr, direccion, telefono, email);
                 
                 return pacienteDominio;
             }

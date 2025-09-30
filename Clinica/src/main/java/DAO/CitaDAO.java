@@ -282,5 +282,22 @@ public class CitaDAO implements ICitaDAO {
         return null;
 
     }
+    
+     // 🔹 Actualizar el estado de una cita por su id
+    public void updateEstado(int idCita, String nuevoEstado) throws Exception {
+        String sql = "UPDATE citas SET estado = ? WHERE id = ?";
+
+        try (Connection conn = ConexionJDBC.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, idCita);
+
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                throw new Exception("No se encontró la cita con id " + idCita);
+            }
+        }
+    }
 
 }

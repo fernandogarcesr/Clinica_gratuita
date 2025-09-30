@@ -48,7 +48,7 @@ List<DoctorDominio> readall();
  * @param doctor Objeto DTO con los nuevos datos del doctor.
  * @return true si la actualización fue exitosa; false si el doctor no existe o hubo error.
  */
-boolean update(DoctorDTO doctor);
+boolean update(int id_doctor,DoctorDominio dominio);
 
 /**
  * Busca un doctor por su identificador único.

@@ -1,6 +1,10 @@
-package Clinica.src.main.java.Presentacion.dialogs.detalles;
+package Presentacion.dialogs.detalles;
 
+import BO.PacienteBO;
+import DAO.PacienteDAO;
+import Dominios.PacienteDominio;
 import Presentacion.dialogs.edicion.DlgEditarPaciente;
+import Presentacion.dialogs.registro.DlgRegistrarPaciente;
 import Presentacion.paneles.PnlPacientes;
 import Presentacion.paneles.elementos.PnlElementoPaciente;
 import Presentacion.styles.*;
@@ -12,152 +16,82 @@ import java.awt.event.MouseEvent;
 
 public class DlgDetallesPaciente extends JDialog {
 
-    //----------PLACEHOLDER HARCODEADO-----------
-    //Dejar valores sin asignar como declaración simple
-
-    String nombre = "Fulanito D´tal";
-    String fechaN = "dd/mm/aaaa";
-    String sexo = "Masculino";
-    String direccion = "Calle de las sirenas, Luna";
-    String correo = "ola@ola.com";
-    String telefono = "1234567890";
-    //----------FIN DEL PLACEHOLDER-----------
-
-
     boolean testeoColor = false;
     Style style = new Style();
     PnlPacientes pnlPacientes;
     PnlElementoPaciente pnlElementoPaciente;
+    
+    
+    private PacienteDominio paciente;
+    private final PacienteBO pacienteBO;
 
-    //Labels
-    CustomLabel lblTitulo = new CustomLabel(nombre, 32);
+    // Labels dinámicos
+    private CustomLabel lblTitulo;
+    private CustomLabel lblCorreo;
+    private CustomLabel lblTelefono;
+    private CustomLabel lblDireccion;
 
-    CustomLabel lblColSexo = new CustomLabel("        Sexo      ", 24);
-    CustomLabel lblSexo = new CustomLabel(sexo, style.letraSize);
+    // Botones
+    private final CustomButton btnEditarPaciente = new CustomButton("Editar información");
+    private final CustomButton btnEliminarPaciente = new CustomButton("Eliminar paciente");
 
-    CustomLabel lblColFechaN = new CustomLabel("        Fecha de nacimiento      ", 24);
-    CustomLabel lblFechaN = new CustomLabel(fechaN, style.letraSize);
+    // Contenedores
+    private final ContainerPanel contenido = new ContainerPanel(style.dialogX, style.dialogY, style.grisDialog, true);
+    private final ContainerPanel columnas = new ContainerPanel(style.dialogX, 50, Color.RED, false);
+    private final ContainerPanel informacion = new ContainerPanel(style.dialogX, 50, Color.ORANGE, false);
 
-    CustomLabel lblColDireccion = new CustomLabel("        Dirección      ", 24);
-    CustomLabel lblDireccion = new CustomLabel(direccion, style.letraSize);
-
-    CustomLabel lblColCorreo = new CustomLabel("      Correo        ", 24);
-    CustomLabel lblCorreo = new CustomLabel(correo, style.letraSize);
-
-    CustomLabel lblColTelefono = new CustomLabel("     Teléfono        ", 24);
-    CustomLabel lblTelefono = new CustomLabel(telefono, style.letraSize);
-
-    CustomLabel lblCitasAgendadas = new CustomLabel("        Citas agendadas      ", 24);
-
-
-    //Boton
-    CustomButton btnEditarPaciente = new CustomButton("Editar información");
-    CustomButton btnEliminarPaciente = new CustomButton("Eliminar paciente");
-
-    //contenedores
-    ContainerPanel contenido = new ContainerPanel(style.dialogX, style.dialogY, style.grisDialog, true);
-    ContainerPanel columnas = new ContainerPanel(style.dialogX, 50, Color.RED, testeoColor);
-    ContainerPanel informacion = new ContainerPanel(style.dialogX, 50, Color.ORANGE, testeoColor);
-
-    //Espacios
+    // Espacios
     Espaciador espaciadorv1 = new Espaciador(10, 50);
     Espaciador espaciadorv2 = new Espaciador(10, 50);
     Espaciador espaciadorv3 = new Espaciador(10, 50);
-    Espaciador espaciadorv4 = new Espaciador(10, 50);
 
+    public DlgDetallesPaciente(Frame parent, PnlPacientes pnlPacientes,
+                               PnlElementoPaciente pnlElementoPaciente,
+                               PacienteDominio paciente, PacienteBO pacienteBO) {
 
-    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
-    //Agregar de parámetro un objeto tipo paciente
-
-    //public DlgDetallesPaciente(Frame parent, PnlPacientes pnlPacientes, PnlElementoPaciente pnlElementoPaciente, Paciente paciente) {
-    public DlgDetallesPaciente(Frame parent, PnlPacientes pnlPacientes, PnlElementoPaciente pnlElementoPaciente) {
-
-        //Setup del dialog
-        super(parent, "Detalles de paciente");
+        super(parent, "Detalles del paciente");
         setSize(style.dimensionDialog);
         setLocationRelativeTo(parent);
         setBackground(style.grisDialog);
 
+        this.pnlPacientes = pnlPacientes;
+        this.pnlElementoPaciente = pnlElementoPaciente;
+        this.paciente = paciente;
+        this.pacienteBO = pacienteBO;
 
-        //----------LÓGICA AQUÍ----------
-        /*
-        //Asignación de variables
+        inicializarUI();
+    }
 
-        nombre = paciente.getNombre();
-        fechaN = paciente.getFechaNacimiento();
-        sexo = paciente.getSexo();
-        direccion = paciente.getDirección;
-        correo = paciente.getCorreo();
-        telefono = paciente.getTelefono();
-
-        */
-        //----------FIN DE LÓGICA----------
-
-
+    private void inicializarUI() {
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
 
-        //Título
+        // Título
+        lblTitulo = new CustomLabel(paciente.getNombre() + " " + paciente.getApellidoPaterno(), 32);
         contenido.add(espaciadorv1);
         contenido.add(lblTitulo);
         contenido.add(espaciadorv2);
 
-        //Info del dr
+        // Columnas
         columnas.setLayout(new GridLayout(1, 0));
-        columnas.add(lblColSexo);
-        columnas.add(lblColFechaN);
-        columnas.add(lblColDireccion);
-        columnas.add(lblColCorreo);
-        columnas.add(lblColTelefono);
+        columnas.add(new CustomLabel("Correo", 24));
+        columnas.add(new CustomLabel("Teléfono", 24));
+        columnas.add(new CustomLabel("Dirección", 24));
         contenido.add(columnas);
 
+        // Información
         informacion.setLayout(new GridLayout(1, 0));
-        informacion.add(lblSexo);
-        informacion.add(lblFechaN);
-        informacion.add(lblDireccion);
+        lblCorreo = new CustomLabel(paciente.getEmail(), style.letraSize);
+        lblTelefono = new CustomLabel(paciente.getTelefono(), style.letraSize);
+        lblDireccion = new CustomLabel(paciente.getDireccion(), style.letraSize);
+
         informacion.add(lblCorreo);
         informacion.add(lblTelefono);
+        informacion.add(lblDireccion);
         contenido.add(informacion);
 
         contenido.add(espaciadorv3);
 
-        //Citas agendadas
-        contenido.add(lblCitasAgendadas);
-        //copiar lógica de mostracion de citas
-
-        contenido.add(espaciadorv4);
-
-
-        //Tratamientos
-
-        //----------LÓGICA AQUÍ----------
-        /*
-        //Listar citas
-        //Nota: no estoy seguro si esto vaya a jalar
-
-        //(Recorre todas las citas que tenga este paciente)
-        for(int i = 0; i < paciente.citas.length; i++) {
-
-            ContainerPanel cita = new ContainerPanel(style.dialogX, 50, Color.RED, testeoColor);
-
-            CustomLabel lblDoctor = new CustomLabel(paciente.citas[i].getNombrePaciente(), style.letraSize);
-            CustomLabel lblFechaHora = new CustomLabel(paciente.citas[i].getFechaHora(), style.letraSize);
-            CustomLabel lblEstado = new CustomLabel(paciente.citas[i].getEstado(), style.letraSize);
-            CustomLabel lblCita = new CustomLabel(paciente.citas[i].getNombreCita(), style.letraSize);
-
-            cita.add(lblDoctor);
-            cita.add(lblFechaHora);
-            cita.add(lblEstado);
-            cita.add(lblCita);
-
-            add(cita)
-
-        }
-
-        */
-        //----------FIN DE LÓGICA----------
-
-
-        //Botones
+        // Botones
         btnEditarPaciente.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -174,39 +108,30 @@ public class DlgDetallesPaciente extends JDialog {
         });
         contenido.add(btnEliminarPaciente);
 
-
-
         add(contenido);
-
     }
 
-    //----------LÓGICA AQUÍ----------
-
-    public void eliminarPaciente() {
-
-        //hacer cosa mágica para que se elimine
-        System.out.println("Haz de cuenta que se eliminó el paciente " + nombre);
-
-        pnlPacientes.refresh();
-        pnlElementoPaciente.refresh();
+    private void editarPaciente() {
+        DlgRegistrarPaciente dlg = new DlgRegistrarPaciente(null, pnlPacientes, paciente, true);
+        dlg.setVisible(true);
         this.dispose();
-
     }
 
-    public void editarPaciente() {
+    private void eliminarPaciente() {
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Seguro que deseas eliminar este paciente?",
+                "Confirmar", JOptionPane.YES_NO_OPTION);
 
-        System.out.println("Desplegar dialog de edición");
-
-        DlgEditarPaciente edicion = new DlgEditarPaciente(null, pnlPacientes, pnlElementoPaciente);
-        edicion.setVisible(true);
-
-        pnlPacientes.refresh();
-        pnlElementoPaciente.refresh();
-        this.dispose();
-
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                pacienteBO.eliminarPaciente(paciente.getId_paciente());
+                JOptionPane.showMessageDialog(this, "Paciente eliminado correctamente");
+                pnlPacientes.refresh();
+                dispose();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error al eliminar paciente: " + ex.getMessage());
+            }
+        }
     }
-
-    //----------FIN DE LÓGICA----------
-
 
 }

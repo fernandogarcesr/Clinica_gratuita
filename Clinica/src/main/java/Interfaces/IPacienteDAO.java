@@ -23,7 +23,7 @@ public interface IPacienteDAO {
      * @return true si el paciente fue insertado correctamente; false en caso
      * contrario.
      */
-    boolean insert(PacienteDTO paciente);
+    int insert(PacienteDTO paciente);
 
     /**
      * Elimina un paciente existente por su identificador único. Se recomienda
@@ -51,7 +51,7 @@ public interface IPacienteDAO {
      * @return true si la actualización fue exitosa; false si el paciente no
      * existe o hubo error.
      */
-    boolean update(PacienteDTO paciente);
+    boolean update(PacienteDominio paciente);
 
     /**
      * Busca un paciente por su identificador único.

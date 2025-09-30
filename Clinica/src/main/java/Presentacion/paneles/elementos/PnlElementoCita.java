@@ -1,4 +1,4 @@
-package Clinica.src.main.java.Presentacion.paneles.elementos;
+package Presentacion.paneles.elementos;
 
 import Presentacion.dialogs.detalles.DlgDetallesCita;
 import Presentacion.paneles.PnlCitas;
@@ -11,64 +11,52 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class PnlElementoCita extends JPanel {
-
-
-    //----------PLACEHOLDER HARCODEADO-----------
-    //Dejar valores sin asignar como declaración simple
-
-    String nombreMedico = "Dr. Pancracio López";
-    String nombrePaciente = "Fulanito D´tal";
-    String fechaHora = "dd/mm/aaaa 00:00hrs";
-    String estado = "Programada";
-    //----------FIN DEL PLACEHOLDER-----------
-
-
-    Style style = new Style();
-    Dimension dimension = new Dimension(Style.frameX - 20, 70);
-    PnlCitas pnlCitas;
-    PnlElementoCita pnlElementoCita;
-
-    boolean testeoColor = false;
-
-
-    CustomLabel lblMedico = new CustomLabel("  " + nombreMedico, 18);
-    CustomLabel lblPaciente = new CustomLabel("     " + nombrePaciente, 18);
-    CustomLabel lblFechaHora = new CustomLabel(" "  + fechaHora + "        ", 18);
-    CustomLabel lblEstado = new CustomLabel(" " + estado + " ", 18);
+ private Style style = new Style();
+    private PnlCitas pnlCitas;
+    private PnlElementoCita pnlElementoCita;
+    
+     private CustomLabel lblMedico;
+    private CustomLabel lblPaciente;
+    private CustomLabel lblFechaHora;
+    private CustomLabel lblEstado;
+     private int idCita;
+     private String motivo;
 
 
     //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
     //Agregar de parámetro un objeto tipo cita
 
     //public PnlElementoCita(PnlCitas pnlCitas, Cita cita) {
-    public PnlElementoCita(PnlCitas pnlCitas) {
+    public PnlElementoCita(int idCita, String nombreMedico, String nombrePaciente,
+                           String fechaHora, String estado, String motivo,PnlCitas pnlCitas) {
 
-        //Establecimiento de panel
-        setMaximumSize(dimension);
-        setMinimumSize(dimension);
-        setPreferredSize(dimension);
-        setBackground(style.grisBase);
-
+        // Guardar referencias
+        this.idCita = idCita;
         this.pnlCitas = pnlCitas;
-        pnlElementoCita = this;
+        this.pnlElementoCita = this;
+        this.motivo = motivo;
 
+        // Establecimiento de panel
+        setMaximumSize(new Dimension(style.frameX, 50));
+        setMinimumSize(new Dimension(style.frameX, 50));
+        setPreferredSize(new Dimension(style.frameX, 50));
+        setBackground(style.grisBase);
+        setLayout(new GridLayout(1, 4)); // columnas igual que en PnlCitas
 
-        //----------LÓGICA AQUÍ----------
-        /*
-        //Asignación de variables
+        // Crear labels con los datos
+        lblMedico = new CustomLabel(nombreMedico, style.letraSize);
+        lblPaciente = new CustomLabel(nombrePaciente, style.letraSize);
+        lblFechaHora = new CustomLabel(fechaHora, style.letraSize);
+        lblEstado = new CustomLabel(estado, style.letraSize);
 
-        nombreMedico = cita.getNombreMedico();
-        nombre = cita.getNombrePaciente();
-        fechaHora = cita.getFechaHora();
-        estado = cita.getEstado();
+        // Agregar labels al panel
+        add(lblMedico);
+        add(lblPaciente);
+        add(lblFechaHora);
+        add(lblEstado);
 
-        */
-        //----------FIN DE LÓGICA----------
-
-
-        //Acciones del panel
+        // Eventos 
         addMouseListener(new MouseAdapter() {
-            //Hover
             @Override
             public void mouseEntered(MouseEvent e) {
                 setBackground(style.grisBaseHover);
@@ -79,41 +67,19 @@ public class PnlElementoCita extends JPanel {
                 setBackground(style.grisBase);
             }
 
-            //Mostrar info al ser clickeado
+            // Mostrar info al hacer click
             @Override
             public void mouseClicked(MouseEvent e) {
-
-                //----------PLACEHOLDER HARCODEADO-----------
-                DlgDetallesCita detalles = new DlgDetallesCita(null, pnlCitas, pnlElementoCita);
+                // Ahora pasas la info real a DlgDetallesCita
+                DlgDetallesCita detalles = new DlgDetallesCita(null, pnlCitas, pnlElementoCita, 
+                        idCita, nombreMedico, nombrePaciente, fechaHora, estado, motivo);
                 detalles.setVisible(true);
-                //----------FIN DEL PLACEHOLDER-----------
-
-
-                //----------LÓGICA AQUÍ----------
-                /*
-
-                DlgDetallesCita detalles = new DlgDetallesCita(null, pnlCitas,  pnlElementoCita, cita);
-                detalles.setVisible(true);
-
-                */
-                //----------FIN DE LÓGICA----------
-
             }
         });
-
-        add(lblMedico);
-        add(lblPaciente);
-        add(lblFechaHora);
-        add(lblEstado);
-
-
     }
 
     public void refresh() {
-        /*
-        DlgRegistrarCita registrar = new DlgRegistrarCita(null);
-        registrar.setVisible(true);*/
-
+    
         System.out.println("refresh pnlElementoCitas");
 
         revalidate();

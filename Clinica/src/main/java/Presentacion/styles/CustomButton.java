@@ -1,4 +1,4 @@
-package Clinica.src.main.java.Presentacion.styles;
+package Presentacion.styles;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;

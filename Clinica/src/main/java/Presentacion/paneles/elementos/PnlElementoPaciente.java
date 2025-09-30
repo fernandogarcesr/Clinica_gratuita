@@ -1,5 +1,8 @@
-package Clinica.src.main.java.Presentacion.paneles.elementos;
+package Presentacion.paneles.elementos;
 
+import BO.PacienteBO;
+import DAO.PacienteDAO;
+import Dominios.PacienteDominio;
 import Presentacion.dialogs.detalles.DlgDetallesPaciente;
 import Presentacion.paneles.PnlPacientes;
 import Presentacion.styles.CustomLabel;
@@ -12,107 +15,76 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class PnlElementoPaciente extends JPanel {
+ private Style style = new Style();
+    private PnlPacientes pnlPacientes;
+    private final PacienteDominio paciente;
+    private final PacienteBO pacienteBO;
+    private boolean testeoColor = false;
+    
 
-    //----------PLACEHOLDER HARCODEADO-----------
-    //Dejar valores sin asignar como declaración simple
-
-    String nombre = "Fulanito D´tal";
-    String sexo = "siempre";
-    String edad = "23";
-    String telefono = "1234-567-890";
-    //----------FIN DEL PLACEHOLDER-----------
-
-
-    Style style = new Style();
-    Dimension dimension = new Dimension(Style.frameX - 20, 70);
-    PnlPacientes pnlPacientes;
-    PnlElementoPaciente pnlElementoPaciente = this;
-
-    boolean testeoColor = false;
-
-    CustomLabel lblNombre = new CustomLabel("  " + nombre, 18);
-    CustomLabel lblSexo = new CustomLabel("   " + sexo, 18);
-    CustomLabel lblEdad = new CustomLabel("   " + edad + "     ", 18);
-    CustomLabel lblTelefono = new CustomLabel("   " + telefono + "     ", 18);
-    Espaciador espacioh1 = new Espaciador(10, 10);
-
-
-    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
-    //Agregar de parámetro un objeto tipo paciente
-
+     private CustomLabel lblNombre;
+    private CustomLabel lblEdad;
+     private CustomLabel lblCorreo;
+    private CustomLabel lblTelefono;
+   
     //public PnlElementoPaciente(Paciente paciente) {
-    public PnlElementoPaciente(PnlPacientes pnlPacientes) {
+    public PnlElementoPaciente(PnlPacientes pnlPacientes, PacienteDominio paciente, PacienteBO pacienteBO) {
+        this.pnlPacientes = pnlPacientes;    
+        this.paciente = paciente;
+        this.pacienteBO = pacienteBO;
 
-        //Establecimiento de panel
-        setMaximumSize(dimension);
-        setMinimumSize(dimension);
-        setPreferredSize(dimension);
+        construirUI();
+        inicializarEventos();
+         // Estilo panel
+        setMaximumSize(new Dimension(style.frameX, 50));
+        setMinimumSize(new Dimension(style.frameX, 50));
+        setPreferredSize(new Dimension(style.frameX, 50));
         setBackground(style.grisBase);
-        setLayout(new GridLayout(1, 6));
+        setLayout(new GridLayout(1, 4));
 
-        this.pnlPacientes = pnlPacientes;
+        
+    }
+    
+    private void construirUI() {
+        setLayout(new GridLayout(1, 4));
+        setPreferredSize(new Dimension(style.frameX, 50));
+        setBackground(Color.LIGHT_GRAY);
 
-
-        //----------LÓGICA AQUÍ----------
-        /*
-        //Asignación de variables
-
-        nombre = paciente.getNombre();
-        sexo = paciente.getSexo();
-        edad = paciente.getEdad();
-        telefono = paciente.getTelefono();
-
-        */
-        //----------FIN DE LÓGICA----------
-
-
-        //Acciones del panel
-        addMouseListener(new MouseAdapter() {
-            //Hover
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                setBackground(style.grisBaseHover);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                setBackground(style.grisBase);
-            }
-
-            //Mostrar info al ser clickeado
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                //----------PLACEHOLDER HARCODEADO-----------
-                DlgDetallesPaciente detalles = new DlgDetallesPaciente(null, pnlPacientes, pnlElementoPaciente);
-                detalles.setVisible(true);
-                //----------FIN DEL PLACEHOLDER-----------
-
-
-                //----------LÓGICA AQUÍ----------
-                /*
-
-                DlgDetallesPaciente detalles = new DlgDetallesPaciente(null, pnlPacientes, pnlElementoPaciente, paciente);
-                detalles.setVisible(true);
-
-                */
-                //----------FIN DE LÓGICA----------
-
-            }
-        });
+        lblNombre = new CustomLabel(paciente.getNombre() + " " + paciente.getApellidoPaterno(), style.letraSize);
+        lblEdad = new CustomLabel(String.valueOf(paciente.getEdad()), style.letraSize);
+        lblCorreo = new CustomLabel(paciente.getEmail(), style.letraSize);
+        lblTelefono = new CustomLabel(paciente.getTelefono(), style.letraSize);
 
         add(lblNombre);
-        add(lblSexo);
         add(lblEdad);
+        add(lblCorreo);
         add(lblTelefono);
-        //add(espacioh1);
 
+        setOpaque(true);
     }
 
+    private void inicializarEventos() {
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                abrirDetalles();
+            }
+        });
+    }
+
+    private void abrirDetalles() {
+        DlgDetallesPaciente dlgDetalles = new DlgDetallesPaciente(
+                null, pnlPacientes, this, paciente, pacienteBO
+        );
+        dlgDetalles.setVisible(true);
+    }
+
+    // Para refrescar después de editar/eliminar
     public void refresh() {
-
-        System.out.println("refresh pnlElementoPaciente");
-
+        lblNombre.setText(paciente.getNombre() + " " + paciente.getApellidoPaterno());
+        lblEdad.setText(String.valueOf(paciente.getEdad())); 
+        lblCorreo.setText(paciente.getEmail());
+        lblTelefono.setText(paciente.getTelefono());
         revalidate();
         repaint();
     }

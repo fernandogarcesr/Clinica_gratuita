@@ -14,8 +14,10 @@ import Dominios.ENUM.Sexo;
 public class PacienteDTO {
 
     private String nombre;
+    private String apellidoPaterno;
+    private String apellidoMaterno;
     private int edad;
-    private Sexo sexo;
+    private String sexo;
     private String direccion;
     private String telefono;
     private String email;
@@ -23,14 +25,34 @@ public class PacienteDTO {
     public PacienteDTO() {
     }
 
-    public PacienteDTO(String nombre, int edad, Sexo sexo, String direccion, String telefono, String email) {
+    public PacienteDTO(String nombre, String apellidoPaterno, String apellidoMaterno, int edad, String sexo, String direccion, String telefono, String email) {
         this.nombre = nombre;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
         this.edad = edad;
         this.sexo = sexo;
         this.direccion = direccion;
         this.telefono = telefono;
         this.email = email;
     }
+
+    public String getApellidoPaterno() {
+        return apellidoPaterno;
+    }
+
+    public void setApellidoPaterno(String apellidoPaterno) {
+        this.apellidoPaterno = apellidoPaterno;
+    }
+
+    public String getApellidoMaterno() {
+        return apellidoMaterno;
+    }
+
+    public void setApellidoMaterno(String apellidoMaterno) {
+        this.apellidoMaterno = apellidoMaterno;
+    }
+
+   
 
     public String getNombre() {
         return nombre;
@@ -48,11 +70,11 @@ public class PacienteDTO {
         this.edad = edad;
     }
 
-    public Sexo getSexo() {
+    public String getSexo() {
         return sexo;
     }
 
-    public void setSexo(Sexo sexo) {
+    public void setSexo(String sexo) {
         this.sexo = sexo;
     }
 
@@ -82,7 +104,9 @@ public class PacienteDTO {
 
     @Override
     public String toString() {
-        return "PacientesDominio{" + ", nombre=" + nombre + ", edad=" + edad + ", sexo=" + sexo + ", direccion=" + direccion + ", telefono=" + telefono + ", email=" + email + '}';
+        return "PacienteDTO{" + "nombre=" + nombre + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", edad=" + edad + ", sexo=" + sexo + ", direccion=" + direccion + ", telefono=" + telefono + ", email=" + email + '}';
     }
+
+   
 
 }

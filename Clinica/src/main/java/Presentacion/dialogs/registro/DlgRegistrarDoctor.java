@@ -1,5 +1,10 @@
-package Clinica.src.main.java.Presentacion.dialogs.registro;
+package Presentacion.dialogs.registro;
 
+import BO.DoctorBO;
+import DAO.CitaDAO;
+import DAO.DoctorDAO;
+import DTO.DoctorDTO;
+import Dominios.DoctorDominio;
 import Presentacion.paneles.PnlDoctores;
 import Presentacion.styles.*;
 
@@ -10,112 +15,133 @@ import java.awt.event.MouseEvent;
 
 public class DlgRegistrarDoctor extends JDialog {
 
-    boolean testeoColor = false;
-    Style style = new Style();
-    String nombres, apellidoP, apellidoM, especialidad, correo, telefono;
-    PnlDoctores pnlDoctores;
+   private final DoctorBO doctorBO;
+    private final PnlDoctores pnlDoctores;
 
-    //Labels
-    CustomLabel lblTitulo = new CustomLabel("Registrar doctor", 32);
+    // --- Modo edición ---
+    private boolean modoEdicion = false;
+    private DoctorDominio doctorEdicion;
 
-    CustomLabel lblNombre = new CustomLabel("Nombre completo", 24);
-    CustomLabel lblEspecialidad = new CustomLabel("Especialidad", 24);
-    CustomLabel lblCorreo = new CustomLabel("Correo electrónico", 24);
-    CustomLabel lblTelefono = new CustomLabel("Teléfono", 24);
+    // --- Labels ---
+    private final CustomLabel lblTitulo = new CustomLabel("Registrar doctor", 32);
+    private final CustomLabel lblNombre = new CustomLabel("Nombre", 24);
+    private final CustomLabel lblTelefono = new CustomLabel("Teléfono", 24);
+    private final CustomLabel lblCorreo = new CustomLabel("Correo", 24);
+    private final CustomLabel lblEspecialidad = new CustomLabel("Especialidad", 24);
 
-    //hardcodeo de especialidades ???
-    String[] especialidades = {"Cardiólogo", "Psiquiatra", "Otorrinolaringólogo"};
+    // --- Inputs ---
+    private final TxtFieldPh txtNombre = new TxtFieldPh("Nombre completo", true, 200, 40, 24);
+    private final TxtFieldPh txtTelefono = new TxtFieldPh("Teléfono", true, 200, 40, 24);
+    private final TxtFieldPh txtCorreo = new TxtFieldPh("Correo", true, 200, 40, 24);
+    private final CustomComboBox cboxEspecialidad =
+            new CustomComboBox(new String[]{"General", "Odontólogo", "Ortodoncia", "Implantología"});
 
-    //Textfields y comboboxes
-    CustomComboBox cboxEspecialidades = new CustomComboBox(especialidades);
+    // --- Botón principal ---
+    private final CustomButton btnGuardar = new CustomButton("Registrar");
 
-    TxtFieldPh txtfldNombres = new TxtFieldPh("Nombre(s)", true, 200, 40, 24);
-    TxtFieldPh txtfldApellidoP = new TxtFieldPh("Apellido paterno", true, 200, 40, 24);
-    TxtFieldPh txtfldApellidoM = new TxtFieldPh("Apellido materno", true, 200, 40, 24);
-    TxtFieldPh txtfldCorreo = new TxtFieldPh("Correo electrónico", true, 200, 40, 24);
-    TxtFieldPh txtfldTelefono = new TxtFieldPh("Teléfono", true, 200, 40, 24);
+    // --- Contenedor principal ---
+    private final ContainerPanel contenido =
+            new ContainerPanel(new Style().dialogX, new Style().dialogY, new Style().grisDialog, true);
 
-    //Botones
-    CustomButton btnGuardar = new CustomButton("Registrar");
-
-    //contenedores
-    ContainerPanel contenido = new ContainerPanel(style.dialogX, style.dialogY, style.grisDialog, true);
-
-    //Espacios
-    Espaciador espaciadorv1 = new Espaciador(10, 50);
-    Espaciador espaciadorv2 = new Espaciador(10, 50);
-    Espaciador espaciadorh1 = new Espaciador(10, 10);
-
-
-    public DlgRegistrarDoctor(Frame parent, PnlDoctores pnlDoctores) {
-
-        //Setup del dialog
-        //super(parent, "Detalles de cita", true);
-        super(parent, "Registrar doctor");
-        setSize(style.dimensionDialog);
-        setLocationRelativeTo(parent);
-        setBackground(style.grisDialog);
-
+    // ---------- CONSTRUCTOR REGISTRO ----------
+    public DlgRegistrarDoctor(Frame parent, PnlDoctores pnlDoctores, DoctorBO doctorBO) {
+        super(parent, "Registrar doctor", true);
         this.pnlDoctores = pnlDoctores;
+        this.doctorBO = doctorBO;
+        inicializar(false, null);
+    }
 
+    // ---------- CONSTRUCTOR EDICIÓN ----------
+    public DlgRegistrarDoctor(Frame parent, PnlDoctores pnlDoctores,
+                              DoctorDominio doctorEdicion, boolean modoEdicion, DoctorBO doctorBO) {
+        super(parent, "Editar doctor", true);
+        this.pnlDoctores = pnlDoctores;
+        this.doctorBO = doctorBO;
+        this.modoEdicion = modoEdicion;
+        this.doctorEdicion = doctorEdicion;
+        inicializar(true, doctorEdicion);
+    }
+
+    // ---------- INICIALIZAR UI ----------
+    private void inicializar(boolean esEdicion, DoctorDominio doctor) {
+        setSize(new Style().dimensionDialog);
+        setLocationRelativeTo(getParent());
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
 
-        //Contenido
-        contenido.add(espaciadorv1);
+        // --- Construcción UI ---
         contenido.add(lblTitulo);
-        contenido.add(espaciadorv2);
 
         contenido.add(lblNombre);
-        contenido.add(txtfldNombres);
-        contenido.add(txtfldApellidoP);
-        contenido.add(txtfldApellidoM);
-
-        contenido.add(lblEspecialidad);
-        contenido.add(cboxEspecialidades);
-
-        contenido.add(lblCorreo);
-        contenido.add(txtfldCorreo);
+        contenido.add(txtNombre);
 
         contenido.add(lblTelefono);
-        contenido.add(txtfldTelefono);
+        contenido.add(txtTelefono);
 
+        contenido.add(lblCorreo);
+        contenido.add(txtCorreo);
 
-        //Botones
+        contenido.add(lblEspecialidad);
+        contenido.add(cboxEspecialidad);
+
+        // --- Botón guardar ---
         btnGuardar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                registrarDoctor();
+                guardarDoctor();
             }
         });
         contenido.add(btnGuardar);
 
         add(contenido);
 
+        // Precargar datos si es edición
+        if (esEdicion && doctor != null) {
+            precargarDatos(doctor);
+        }
     }
 
-    //----------LÓGICA AQUÍ----------
+    // ---------- PRECARGAR DATOS ----------
+    private void precargarDatos(DoctorDominio d) {
+        lblTitulo.setText("Editar doctor");
+        btnGuardar.setText("Guardar cambios");
 
-    public void registrarDoctor() {
-
-        //hacer cosa mágica para que se guarde el tratamiento
-        //agregar validadores (?)
-        //extracción de la info a strings
-        nombres = txtfldNombres.getText();
-        apellidoP = txtfldApellidoP.getText();
-        apellidoM = txtfldApellidoM.getText();
-        especialidad = cboxEspecialidades.getSelectedItem().toString();
-        correo = txtfldCorreo.getText();
-        telefono = txtfldTelefono.getText();
-
-        System.out.println("Haz de cuenta que se registró el doctor con los datos: " + nombres + apellidoP + apellidoM + especialidad + correo + telefono);
-
-        //Meter la info a la BD
-        //Crear y agregar nuevo elemento a la lista ???
-
-        pnlDoctores.refresh();
-        this.dispose();
-
+        txtNombre.setText(d.getNombre());
+        txtTelefono.setText(d.getTelefono());
+        txtCorreo.setText(d.getEmail());
+        cboxEspecialidad.setSelectedItem(d.getEspecialidad());
     }
-    //----------FIN DE LÓGICA----------
 
+    // ---------- GUARDAR DOCTOR ----------
+    private void guardarDoctor() {
+        try {
+            // Obtener datos
+            String nombre = txtNombre.getText().trim();
+            String telefono = txtTelefono.getText().trim();
+            String correo = txtCorreo.getText().trim();
+            String especialidad = (String) cboxEspecialidad.getSelectedItem();
+
+            DoctorDTO dto = new DoctorDTO();
+            dto.setNombre(nombre);
+            dto.setTelefono(telefono);
+            dto.setEmail(correo);
+            dto.setEspecialidad(especialidad);
+
+            if (modoEdicion && doctorEdicion != null) {
+                // Actualizar (pasar el id del dominio y el DTO)
+                doctorBO.actualizarDoctor(doctorEdicion.getId_doctor(), dto);
+                JOptionPane.showMessageDialog(this, "Doctor actualizado correctamente");
+            } else {
+                // Registrar nuevo
+                doctorBO.registrarDoctor(dto);
+                JOptionPane.showMessageDialog(this, "Doctor registrado correctamente");
+            }
+
+            pnlDoctores.refrescarListaDoctores();
+            dispose();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al guardar doctor: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
 }

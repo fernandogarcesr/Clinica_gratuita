@@ -1,5 +1,8 @@
-package Clinica.src.main.java.Presentacion.dialogs.edicion;
+package Presentacion.dialogs.edicion;
 
+import BO.TratamientoBO;
+import DTO.TratamientoDTO;
+import Dominios.TratamientoDominio;
 import Presentacion.paneles.PnlTratamientos;
 import Presentacion.paneles.elementos.PnlElementoTratamiento;
 import Presentacion.styles.*;
@@ -10,116 +13,65 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class DlgEditarTratamiento extends JDialog {
+    
+    private final TratamientoBO tratamientoBO;
+    private final PnlTratamientos pnlTratamientos;
+    private final TratamientoDominio tratamiento;
 
-    boolean testeoColor = false;
-    Style style = new Style();
-    PnlTratamientos pnlTratamientos;
-    PnlElementoTratamiento pnlElementoTratamiento;
+    CustomLabel lblTitulo = new CustomLabel("Editar tratamiento", 28);
+    CustomLabel lblDuracion = new CustomLabel("Duración (días)", 20);
+    CustomLabel lblMedicamentos = new CustomLabel("Medicamentos", 20);
 
+    TxtFieldPh txtDuracion = new TxtFieldPh("Duración", true, 200, 40, 16);
+    TxtFieldPh txtMedicamentos = new TxtFieldPh("Medicamentos", true, 400, 40, 16);
 
-    //----------PLACEHOLDER HARCODEADO-----------
-    //Dejar valores sin asignar como declaración simple
-    String medicamento = "paracetamol, 200mg";
-    String duracion = "7dias";
-    //----------FIN DEL PLACEHOLDER-----------
+    CustomButton btnGuardar = new CustomButton("Guardar cambios");
 
-
-    //Labels
-    CustomLabel lblTitulo = new CustomLabel("Recetar tratamiento", 32);
-
-    CustomLabel lblMedicamento = new CustomLabel("Nombre del tratamiento", 24);
-    CustomLabel lblDuracion = new CustomLabel("Duración del tratamiento", 24);
-
-    //Textfields
-    TxtFieldPh txtfldTratamiento = new TxtFieldPh("Tratamiento", true, 200, 40, 24);
-    TxtFieldPh txtfldDuracion = new TxtFieldPh("Duración", true, 200, 40, 24);
-
-    //Botones
-    CustomButton btnGuardar = new CustomButton("Guardar");
-
-
-    //contenedores
-    ContainerPanel contenido = new ContainerPanel(style.dialogX, style.dialogY, style.grisDialog, true);
-
-    //Espacios
-    Espaciador espaciadorv1 = new Espaciador(10, 50);
-    Espaciador espaciadorv2 = new Espaciador(10, 50);
-
-
-    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
-    //Agregar de parámetro un objeto tipo tratamiento
-
-    //public DlgEditarTratamiento(Tratamiento tratamiento, PnlTratamientos pnlTratamientos, PnlElementoTratamiento pnlElementoTratamiento) {
-    public DlgEditarTratamiento(Frame parent, PnlTratamientos pnlTratamientos, PnlElementoTratamiento pnlElementoTratamiento) {
-
-        //Setup del dialog
-        super(parent, "Recetar tratamiento");
-        setSize(style.dimensionDialog);
-        setLocationRelativeTo(parent);
-        setBackground(style.grisDialog);
-
+    public DlgEditarTratamiento(Frame owner, PnlTratamientos pnlTratamientos, TratamientoDominio tratamiento, TratamientoBO tratamientoBO) {
+        super(owner, "Editar tratamiento", true);
+        this.tratamientoBO = tratamientoBO;
         this.pnlTratamientos = pnlTratamientos;
-        this.pnlElementoTratamiento = pnlElementoTratamiento;
+        this.tratamiento = tratamiento;
+        inicializarUI();
+    }
 
+    private void inicializarUI() {
+        setSize(new Style().dimensionDialog);
+        setLocationRelativeTo(getOwner());
 
-        //----------LÓGICA AQUÍ----------
-        /*
-        //Asignación de variables
-
-        medicamento = tratamiento.getMedicamento();;
-        duracion = tratamiento.getDuracion;
-
-         */
-        //----------FIN DE LÓGICA----------
-
-
-        txtfldTratamiento.setText(medicamento);
-        txtfldDuracion.setText(duracion);
-
-
+        ContainerPanel contenido = new ContainerPanel(new Style().dialogX, new Style().dialogY, new Style().grisDialog, true);
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
 
-        //Contenido
-        contenido.add(espaciadorv1);
         contenido.add(lblTitulo);
-        contenido.add(espaciadorv2);
-
-        contenido.add(lblMedicamento);
-        contenido.add(txtfldTratamiento);
-
         contenido.add(lblDuracion);
-        contenido.add(txtfldDuracion);
+        txtDuracion.setText(tratamiento.getDuracion());
+        contenido.add(txtDuracion);
 
+        contenido.add(lblMedicamentos);
+        txtMedicamentos.setText(tratamiento.getMedicamentos());
+        contenido.add(txtMedicamentos);
 
-        //Botones
-        btnGuardar.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                guardarTratamiento();
-            }
-        });
+        btnGuardar.addActionListener(e -> guardar());
         contenido.add(btnGuardar);
 
-
         add(contenido);
-
     }
 
-    //----------LÓGICA AQUÍ----------
-    public void guardarTratamiento() {
+    private void guardar() {
+        try {
+            TratamientoDTO dto = new TratamientoDTO();
+            dto.setDuracion(txtDuracion.getText().trim());
+            dto.setMedicamentos(txtMedicamentos.getText().trim());
+            dto.setIdCita(tratamiento.getId_cita()); // se usa en update query del DAO actual
 
-        //hacer cosa mágica para que se guarde el tratamiento
-
-        medicamento = txtfldTratamiento.getText();
-        duracion = txtfldDuracion.getText();
-
-        System.out.println("Haz de cuenta que se guardó el tratamiento con los datos: " + medicamento + duracion);
-
-        pnlTratamientos.refresh();
-        pnlElementoTratamiento.refresh();
-        this.dispose();
-
+            tratamientoBO.actualizarTratamiento(dto); // tu BO espera DTO; si tu BO tiene otro método, llama al correcto
+            JOptionPane.showMessageDialog(this, "Tratamiento actualizado correctamente");
+            if (pnlTratamientos != null) pnlTratamientos.refresh();
+            dispose();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
-    //----------FIN DE LÓGICA----------
 }
 

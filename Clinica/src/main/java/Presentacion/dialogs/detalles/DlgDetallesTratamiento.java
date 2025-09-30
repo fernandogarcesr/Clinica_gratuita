@@ -1,5 +1,7 @@
-package Clinica.src.main.java.Presentacion.dialogs.detalles;
+package Presentacion.dialogs.detalles;
 
+import BO.TratamientoBO;
+import Dominios.TratamientoDominio;
 import Presentacion.dialogs.edicion.DlgEditarTratamiento;
 import Presentacion.paneles.PnlTratamientos;
 import Presentacion.paneles.elementos.PnlElementoTratamiento;
@@ -11,170 +13,85 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class DlgDetallesTratamiento extends JDialog {
-
-    //----------PLACEHOLDER HARCODEADO-----------
-    //Dejar valores sin asignar como declaración simple
-
-    String medicamento = "Paracetamol, 200mg";
-    String duracion = "7 días";
-    String cita = "C-001";
-    String descripcion = "pa que ya no lela pancha";
-    //----------FIN DEL PLACEHOLDER-----------
-
-
-    boolean testeoColor = false;
+ private final PnlTratamientos pnlTratamientos;
+    private final TratamientoDominio tratamiento;
+    private final TratamientoBO tratamientoBO;
     Style style = new Style();
-    PnlTratamientos pnlTratamientos;
-    PnlElementoTratamiento pnlElementoTratamiento;
 
-    //Labels
-    CustomLabel lblTitulo = new CustomLabel("Detalles de tratamiento", 32);
+    private CustomLabel lblTitulo;
+    private CustomLabel lblDescripcion;
+    private CustomLabel lblDuracion;
+    private CustomLabel lblMedicamentos;
+    private CustomLabel lblCita;
 
-    CustomLabel lblColMedicamento = new CustomLabel("        Medicamento      ", 24);
-    CustomLabel lblMedicamento = new CustomLabel(medicamento, style.letraSize);
+    CustomButton btnEditar = new CustomButton("Editar");
+    CustomButton btnEliminar = new CustomButton("Eliminar");
 
-    CustomLabel lblColDuracion = new CustomLabel("      Duración estimada        ", 24);
-    CustomLabel lblDuracion = new CustomLabel(duracion, style.letraSize);
-
-    CustomLabel lblColCita = new CustomLabel("     Cita de origen        ", 24);
-    CustomLabel lblFechaCita = new CustomLabel(cita, style.letraSize);
-
-    CustomLabel lblColDescripcion = new CustomLabel("        Descripcion      ", 24);
-    CustomLabel lblDescripcion = new CustomLabel(descripcion, style.letraSize);
-
-
-    //Boton
-    CustomButton btnEditarTratamiento = new CustomButton("Editar tratamiento", 1, 200, 30);
-    CustomButton btnEliminarTratamiento = new CustomButton("Eliminar tratamiento", 1, 200, 30);
-
-
-    //contenedores
     ContainerPanel contenido = new ContainerPanel(style.dialogX, style.dialogY, style.grisDialog, true);
-    ContainerPanel columnas = new ContainerPanel(style.dialogX, 50, Color.RED, testeoColor);
-    ContainerPanel informacion = new ContainerPanel(style.dialogX, 50, Color.ORANGE, testeoColor);
-    ContainerPanel botones = new ContainerPanel(style.dialogX, 50, Color.PINK, testeoColor);
+    ContainerPanel columnas = new ContainerPanel(style.dialogX, 50, Color.RED, false);
+    ContainerPanel informacion = new ContainerPanel(style.dialogX, 50, Color.ORANGE, false);
 
-    //Espacios
-    Espaciador espaciadorv1 = new Espaciador(10, 50);
-    Espaciador espaciadorv2 = new Espaciador(10, 50);
-    Espaciador espaciadorv3 = new Espaciador(10, 50);
-    Espaciador espaciadorv4 = new Espaciador(10, 50);
+    Espaciador esp1 = new Espaciador(10, 50);
+    Espaciador esp2 = new Espaciador(10, 50);
 
-
-    //----------LÓGICA AQUÍ: MODIFICAR CONSTRUCTOR-----------
-    //Agregar de parámetro un objeto tipo tratamiento
-
-    //public DlgDetallesTratamiento(Frame parent, PnlTratamientos pnlTratamientos, PnlElementoTratamiento pnlElementoTratamiento, Tratamiento tratamiento) {
-    public DlgDetallesTratamiento(Frame parent, PnlTratamientos pnlTratamientos, PnlElementoTratamiento pnlElementoTratamiento) {
-
-        //Setup del dialog
-        super(parent, "Detalles del tratamiento");
-        setSize(style.dimensionDialog);
-        setLocationRelativeTo(parent);
-        setBackground(style.grisDialog);
-
+    public DlgDetallesTratamiento(Frame owner, PnlTratamientos pnlTratamientos, TratamientoDominio tratamiento, TratamientoBO tratamientoBO) {
+        super(owner, "Detalles del tratamiento", true);
         this.pnlTratamientos = pnlTratamientos;
-        this.pnlElementoTratamiento = pnlElementoTratamiento;
+        this.tratamiento = tratamiento;
+        this.tratamientoBO = tratamientoBO;
+        inicializarUI();
+    }
 
-        //----------LÓGICA AQUÍ----------
-        /*
-        //Asignación de variables
-
-        nombreCita = cita.getNombreCita();
-        nombre = cita.getNombreDoctor()";
-        nombre = cita.getNombrePaciente();;
-        cita = cita.getFechaHora();
-        estado = cita.getEstado();
-        descripcion = cita.getMotivo();
-
-        */
-        //----------FIN DE LÓGICA----------
-
-
+    private void inicializarUI() {
+        setSize(style.dimensionDialog);
+        setLocationRelativeTo(getOwner());
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
 
-        //Título
-        contenido.add(espaciadorv1);
+        lblTitulo = new CustomLabel(tratamiento.getDescripcion(), 28);
+        contenido.add(esp1);
         contenido.add(lblTitulo);
-        contenido.add(espaciadorv2);
+        contenido.add(esp2);
 
-        //Info de la cita
         columnas.setLayout(new GridLayout(1, 0));
-        columnas.add(lblColMedicamento);
-        columnas.add(lblColDuracion);
-        columnas.add(lblColCita);
-        //columnas.add(lblColEstado);
+        columnas.add(new CustomLabel("Duración", 24));
+        columnas.add(new CustomLabel("Medicamentos", 24));
+        columnas.add(new CustomLabel("ID Cita", 24));
         contenido.add(columnas);
 
         informacion.setLayout(new GridLayout(1, 0));
-        informacion.add(lblMedicamento);
+        lblDuracion = new CustomLabel(tratamiento.getDuracion(), style.letraSize);
+        lblMedicamentos = new CustomLabel(tratamiento.getMedicamentos(), style.letraSize);
+        lblCita = new CustomLabel(String.valueOf(tratamiento.getId_cita()), style.letraSize);
         informacion.add(lblDuracion);
-        informacion.add(lblFechaCita);
-        //informacion.add(lblEstado);
+        informacion.add(lblMedicamentos);
+        informacion.add(lblCita);
         contenido.add(informacion);
 
-        contenido.add(espaciadorv3);
-        contenido.add(lblColDescripcion);
-        contenido.add(lblDescripcion);
+        contenido.add(Box.createVerticalStrut(20));
 
-        contenido.add(espaciadorv4);
+        btnEditar.addActionListener(e -> {
+            DlgEditarTratamiento dlgEd = new DlgEditarTratamiento((Frame) getOwner(), pnlTratamientos, tratamiento, tratamientoBO);
+            dlgEd.setVisible(true);
+            dispose();
+        });
+        contenido.add(btnEditar);
 
-
-        //Botones
-        btnEliminarTratamiento.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                eliminarTratamiento();
+        btnEliminar.addActionListener(e -> {
+            int ok = JOptionPane.showConfirmDialog(this, "¿Eliminar tratamiento?", "Confirmar", JOptionPane.YES_NO_OPTION);
+            if (ok == JOptionPane.YES_OPTION) {
+                try {
+                    tratamientoBO.eliminarTratamiento(tratamiento.getId_tratamiento());
+                    JOptionPane.showMessageDialog(this, "Tratamiento eliminado");
+                    if (pnlTratamientos != null) pnlTratamientos.refresh();
+                    dispose();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage());
+                }
             }
         });
-        btnEditarTratamiento.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                editarTratamiento();
-            }
-        });
-
-        contenido.add(btnEditarTratamiento);
-        contenido.add(btnEliminarTratamiento);
+        contenido.add(btnEliminar);
 
         add(contenido);
-
     }
-
-
-    //----------LÓGICA AQUÍ----------
-
-    public void eliminarTratamiento() {
-
-        //hacer cosa mágica para que se elimine el tratamiento
-        System.out.println("Haz de cuenta que se eliminó el tratamiento " + medicamento);
-
-        pnlTratamientos.refresh();
-        pnlElementoTratamiento.refresh();
-        this.dispose();
-
-    }
-
-    public void editarTratamiento() {
-
-        System.out.println("Editar tratamiento");
-
-        //----------PLACEHOLDER HARCODEADO-----------
-        DlgEditarTratamiento editar = new DlgEditarTratamiento(null, pnlTratamientos, pnlElementoTratamiento);
-        editar.setVisible(true);
-        //----------FIN DEL PLACEHOLDER-----------
-
-        /*
-        DlgEditarTratamiento detalles = new DlgEditarTratamiento(null, pnlTratamientos, pnlElementoTratamiento, tratamiento);
-        detalles.setVisible(true);
-        */
-
-        pnlTratamientos.refresh();
-        pnlElementoTratamiento.refresh();
-        this.dispose();
-
-    }
-
-    //----------FIN DE LÓGICA----------
-
+  
 }

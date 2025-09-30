@@ -1,4 +1,4 @@
-package Clinica.src.main.java.Presentacion.dialogs.edicion;
+package Presentacion.dialogs.edicion;
 
 import Presentacion.paneles.PnlPacientes;
 import Presentacion.paneles.elementos.PnlElementoPaciente;
@@ -151,8 +151,6 @@ public class DlgEditarPaciente extends JDialog {
         add(contenido);
 
     }
-
-    //----------LÓGICA AQUÍ----------
 
     public void guardarPaciente() {
 

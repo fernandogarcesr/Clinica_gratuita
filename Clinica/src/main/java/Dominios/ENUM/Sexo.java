@@ -10,5 +10,6 @@ package Dominios.ENUM;
  */
 public enum Sexo {
     MASCULINO,
-    FEMENINO
+    FEMENINO,
+    OTRO
 }

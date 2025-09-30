@@ -1,9 +1,13 @@
-package Clinica.src.main.java.Presentacion.paneles;
+package Presentacion.paneles;
 
+import BO.TratamientoBO;
+import DAO.CitaDAO;
+import DAO.TratamientoDAO;
+import Dominios.TratamientoDominio;
 import Presentacion.dialogs.registro.DlgRegistrarTratamiento;
 import Presentacion.paneles.elementos.PnlElementoTratamiento;
 import Presentacion.styles.*;
-
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -11,91 +15,85 @@ import java.awt.event.MouseEvent;
 
 public class PnlTratamientos extends JPanel {
 
+Style style = new Style();
+    private final TratamientoBO tratamientoBO;
+    private JPanel pnlListado;
+    private JScrollPane scrollPane;
 
-    Style style = new Style();
-    boolean testeoColor = false;
-    PnlTratamientos pnlTratamientos = this;
-
-    //Título
-    ContainerPanel titulo = new ContainerPanel(style.frameX, 40, Color.RED, testeoColor);
+    // Título y encabezados (igual diseño a pacientes)
+    ContainerPanel titulo = new ContainerPanel(style.frameX, 40, Color.RED, false);
     CustomLabel lblTitulo = new CustomLabel("           Tratamientos", 24);
 
-    //Columnas
-    ContainerPanel columnas = new ContainerPanel(style.frameX, 50, Color.GREEN, false);
-    CustomLabel lblMedicamento = new CustomLabel("Medicamento", style.letraSize);
-    CustomLabel lblDuracion = new CustomLabel("Duración estimada", style.letraSize);
-    CustomLabel lblCita = new CustomLabel("Cita de origen", style.letraSize);
+    ContainerPanel columnas = new ContainerPanel(style.frameX, 50, Color.ORANGE, false);
+    CustomLabel lblDescripcion = new CustomLabel("Descripción", style.letraSize);
+    CustomLabel lblDuracion = new CustomLabel("Duración", style.letraSize);
+    CustomLabel lblMedicamentos = new CustomLabel("Medicamentos", style.letraSize);
+    CustomLabel lblCita = new CustomLabel("ID Cita", style.letraSize);
 
-    //Botón
-    CustomButton btnRecetarTratamiento = new CustomButton("Recetar nuevo tratamiento");
+    CustomButton btnRegistrarTratamiento = new CustomButton("Registrar nuevo tratamiento");
 
-    //Espaciadores
     Espaciador espaciov1 = new Espaciador(10, 30);
 
-    int espacioX = 100;
-    Espaciador espacioh1 = new Espaciador(100, 10);
-    Espaciador espacioh2 = new Espaciador(150, 10);
-    Espaciador espacioh3 = new Espaciador(80, 10);
-
-
     public PnlTratamientos() {
-
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
         add(espaciov1);
 
-        //Encabezado
         titulo.setLayout(new BorderLayout());
         titulo.add(lblTitulo, BorderLayout.WEST);
         add(titulo);
 
-        columnas.add(espacioh1);
-        columnas.add(lblMedicamento);
-        columnas.add(espacioh2);
+        columnas.setLayout(new GridLayout(1, 4));
+        columnas.add(lblDescripcion);
         columnas.add(lblDuracion);
-        columnas.add(espacioh3);
+        columnas.add(lblMedicamentos);
         columnas.add(lblCita);
-
         add(columnas);
 
+        pnlListado = new JPanel();
+        pnlListado.setLayout(new BoxLayout(pnlListado, BoxLayout.Y_AXIS));
+        pnlListado.setBackground(Color.DARK_GRAY);
 
-        //----------PLACEHOLDER HARCODEADO-----------
-        PnlElementoTratamiento ejemplo = new PnlElementoTratamiento(pnlTratamientos);
-        add(ejemplo);
-        //----------FIN DEL PLACEHOLDER-----------
+        scrollPane = new JScrollPane(pnlListado);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setPreferredSize(new Dimension(style.frameX, 400));
+        add(scrollPane);
 
+        // Crear BO con DAO por defecto
+        tratamientoBO = new TratamientoBO(new TratamientoDAO(), new CitaDAO());
 
-        //----------LÓGICA AQUÍ----------
-        /*
-
-        for(int i = 0; i < tratamientos.length; i++){
-            PnlElementoTratamiento elementoTratamiento = new PnlElementoTratamiento(pnlTratamientos, tratamiento);
-            add(elementoTratamiento)
-        }
-
-        */
-        //----------FIN DE LÓGICA----------
-
-
-        btnRecetarTratamiento.addMouseListener(new MouseAdapter() {
+        btnRegistrarTratamiento.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                DlgRegistrarTratamiento registrar = new DlgRegistrarTratamiento(null, pnlTratamientos);
-                registrar.setVisible(true);
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                DlgRegistrarTratamiento dlg = new DlgRegistrarTratamiento(null, PnlTratamientos.this, tratamientoBO);
+                dlg.setVisible(true);
             }
         });
-        add(btnRecetarTratamiento);
 
-        setOpaque(false);
-        setVisible(true);
+        add(btnRegistrarTratamiento);
+
+        refresh();
     }
 
     public void refresh() {
-
-        System.out.println("refresh pnlTratamientos");
-
-        revalidate();
-        repaint();
+        try {
+            pnlListado.removeAll();
+            List<TratamientoDominio> lista = new TratamientoDAO().readall(); // o tratamientoBO.listarTratamientos() si prefieres BO
+            if (lista != null) {
+                for (TratamientoDominio t : lista) {
+                    PnlElementoTratamiento elemento = new PnlElementoTratamiento(this, t, tratamientoBO);
+                    pnlListado.add(elemento);
+                    pnlListado.add(Box.createVerticalStrut(8));
+                }
+            }
+            pnlListado.revalidate();
+            pnlListado.repaint();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al cargar tratamientos: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
+    public TratamientoBO getTratamientoBO() {
+        return tratamientoBO;
+    }
 }

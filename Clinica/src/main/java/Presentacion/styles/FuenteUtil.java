@@ -1,4 +1,4 @@
-package Clinica.src.main.java.Presentacion.styles;
+package Presentacion.styles;
 
 import java.awt.*;
 import java.io.InputStream;

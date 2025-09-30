@@ -1,4 +1,4 @@
-package Clinica.src.main.java.Presentacion.paneles;
+package Presentacion.paneles;
 
 import Presentacion.styles.*;
 
