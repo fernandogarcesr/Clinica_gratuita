@@ -284,20 +284,26 @@ public class CitaDAO implements ICitaDAO {
     }
     
      // 🔹 Actualizar el estado de una cita por su id
-    public void updateEstado(int idCita, String nuevoEstado) throws Exception {
-        String sql = "UPDATE citas SET estado = ? WHERE id = ?";
+    public void updateEstado(int idCita, String nuevoEstado) throws SQLException {
+    List<String> estadosValidos = List.of("Programada", "En curso", "Completada", "Cancelada");
+    if (!estadosValidos.contains(nuevoEstado)) {
+        throw new IllegalArgumentException("Estado inválido: " + nuevoEstado);
+    }
 
-        try (Connection conn = ConexionJDBC.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    String sql = "UPDATE citas SET estado = ? WHERE id_citas = ?";
 
-            ps.setString(1, nuevoEstado);
-            ps.setInt(2, idCita);
+    try (Connection conn = ConexionJDBC.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            int rows = ps.executeUpdate();
-            if (rows == 0) {
-                throw new Exception("No se encontró la cita con id " + idCita);
-            }
+        ps.setString(1, nuevoEstado);
+        ps.setInt(2, idCita);
+
+        int rows = ps.executeUpdate();
+        if (rows == 0) {
+            throw new SQLException("No se encontró la cita con id " + idCita);
         }
     }
+}
+
 
 }

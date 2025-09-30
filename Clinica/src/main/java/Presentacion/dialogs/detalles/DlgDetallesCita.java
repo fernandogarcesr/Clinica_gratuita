@@ -1,5 +1,7 @@
 package Presentacion.dialogs.detalles;
 
+import DTO.CitaDTO;
+import Dominios.ENUM.Estado;
 import Presentacion.paneles.PnlCitas;
 import Presentacion.paneles.elementos.PnlElementoCita;
 import Presentacion.styles.*;
@@ -137,7 +139,7 @@ public class DlgDetallesCita extends JDialog {
     // Metodo auxiliar para cambiar estado en BD
     private void actualizarEstado(String nuevoEstado) {
         try {
-            DAO.CitaDAO citaDAO = new DAO.CitaDAO();
+            DAO.CitaDAO citaDAO = new DAO.CitaDAO();            
             citaDAO.updateEstado(idCita, nuevoEstado);
             JOptionPane.showMessageDialog(this, "Cita marcada como " + nuevoEstado);
             pnlCitas.refresh();
